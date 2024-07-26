@@ -2,7 +2,7 @@
 using UnityEditor;
 using System.Collections.Generic;
 
-public class ShortcutsAndHistory : EditorWindow
+public class ShortcutsAndHistoryWindow : EditorWindow
 {
     private static List<GameObject> shortcutObjects = new List<GameObject>();
     private static Stack<GameObject> selectionHistoryBack = new Stack<GameObject>();
