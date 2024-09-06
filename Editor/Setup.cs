@@ -36,6 +36,7 @@ public static class Setup {
         Refresh();
         Folders.Move("_Project", "Scenes");
         Folders.Move("_Project", "Settings");
+        Folders.Move("_Project", "Utilities-main");
         Folders.Delete("TutorialInfo");
         Refresh();
 
