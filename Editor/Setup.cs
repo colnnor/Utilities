@@ -57,12 +57,24 @@ public static class Setup
         Packages.InstallPackages(new[]
         {
             "com.unity.2d.animation",
+            "com.unity.netcode.gameobjects",
             "git+https://github.com/adammyhre/Unity-Improved-Timers.git",
             "com.unity.cinemachine",
             "com.unity.inputsystem"
         });
     }
 
+    [MenuItem("Tools/Setup/Packages/Install Input System")]
+    public static void InstallInputSystem()
+    {
+        Packages.InstallPackages("com.unity.inputsystem");
+    }
+    
+    [MenuItem("Tools/Setup/Packages/Install Netcode For Game Objects")]
+    public static void InstallNetcodeGameObjects()
+    {
+        Packages.InstallPackages("com.unity.netcode.gameobjects");
+    }
     [MenuItem("Tools/Setup/Packages/Install 2D Animation")]
     public static void Install2DAnimation()
     {
@@ -76,6 +88,12 @@ public static class Setup
     public static void InstallImprovedTimers()
     {
         Packages.InstallPackages("git+https://github.com/adammyhre/Unity-Improved-Timers.git");
+    }
+    
+    [MenuItem("Tools/Setup/Packages/Install Cinemachine")]
+    public static void InstallCinemachine()
+    {
+        Packages.InstallPackages("com.unity.cinemachine");
     }
 
     #endregion
