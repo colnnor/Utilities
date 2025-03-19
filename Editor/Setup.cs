@@ -11,7 +11,7 @@ using static System.IO.Path;
 using static UnityEditor.AssetDatabase;
 
 public static class Setup {
-    [MenuItem("Tools/Setup/Import Essential Assets")]
+    [MenuItem("Tools/Colnnor/Setup/Import Essential Assets")]
     public static void ImportEssentials() {
         Assets.ImportAsset("Odin Inspector and Serializer", "Sirenix/Editor ExtensionsSystem");
         Assets.ImportAsset("DOTween HOTween v2.unitypackage", "Demigiant/Editor ExtensionsAnimation");
@@ -36,7 +36,6 @@ public static class Setup {
         Refresh();
         Folders.Move("_Project", "Scenes");
         Folders.Move("_Project", "Settings");
-        Folders.Move("_Project", "Utilities-main");
         Folders.Delete("TutorialInfo");
         Refresh();
 

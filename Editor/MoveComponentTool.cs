@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
-public class MoveComponentTool
+public static class MoveComponentTool
 {
     const string MOVE_TO_TOP = "CONTEXT/Component/Move To Top";
     const string MOVE_TO_BOTTOM = "CONTEXT/Component/Move To Bottom";
