@@ -79,10 +79,33 @@ public static class Extensions
             component = gameObject.AddComponent<T>();
         return component;
     }
+    public static void SetPosition(this GameObject gameObject, Vector3 position)
+    {
+        gameObject.transform.position = position;
+    }
+    public static void SetRotation(this GameObject gameObject, Quaternion rotation)
+    {
+        gameObject.transform.rotation = rotation;
+    }
+    public static void SetScale(this GameObject gameObject, Vector3 scale)
+    {
+        gameObject.transform.localScale = scale;
+    }
+    public static void SetParent(this GameObject gameObject, Transform parent)
+    {
+        gameObject.transform.SetParent(parent);
+    }
+
+    public static void SetPositionAndRotation(this GameObject gameObject, Vector3 position, Quaternion rotation)
+    {
+        gameObject.transform.SetPositionAndRotation(position, rotation);
+    }
     public static GameObject Instantiate(this GameObject obj, Vector3? position = null, Quaternion? rotation = null, Transform parent = null)
     {
         return Object.Instantiate(obj, position ?? Vector3.zero, rotation ?? Quaternion.identity, parent);
     }
+
+
     public static T GetComponentOrInChildren<T>(this GameObject gameObject) where T : Component
     {
         T component = gameObject.GetComponent<T>();
