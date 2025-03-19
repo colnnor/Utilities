@@ -5,24 +5,57 @@ using UnityEditor;
 using UnityEditor.PackageManager;
 using UnityEditor.PackageManager.Requests;
 using UnityEngine;
-
 using static System.Environment;
 using static System.IO.Path;
 using static UnityEditor.AssetDatabase;
 
-public static class Setup {
-    [MenuItem("Tools/Colnnor/Setup/Import Essential Assets")]
-    public static void ImportEssentials() {
+public static class Setup
+{
+    #region Assets
+
+    [MenuItem("Tools/Setup/Assets/Import Essential Assets")]
+    public static void ImportEssentials()
+    {
         Assets.ImportAsset("Odin Inspector and Serializer", "Sirenix/Editor ExtensionsSystem");
+        Assets.ImportAsset("Hot Reload Edit Code Without Compiling", "The Naughty Cult/Editor ExtensionsUtilities");
         Assets.ImportAsset("DOTween HOTween v2.unitypackage", "Demigiant/Editor ExtensionsAnimation");
-        Assets.ImportAsset("Selection History", "Staggart Creations/Editor ExtensionsUtilities");
         Assets.ImportAsset("Audio Preview Tool", "Warped Imagination/Editor ExtensionsAudio");
         // and so on...
     }
 
-    [MenuItem("Tools/Setup/Install Essential Packages")]
-    public static void InstallPackages() {
-        Packages.InstallPackages(new[] {
+    [MenuItem("Tools/Setup/Assets/Import Hot Reload")]
+    public static void ImportHotReload()
+    {
+        Assets.ImportAsset("Hot Reload Edit Code Without Compiling", "The Naughty Cult/Editor ExtensionsUtilities");
+    }
+
+    [MenuItem("Tools/Setup/Assets/Import Odin Inspector")]
+    public static void ImportOdinInspector()
+    {
+        Assets.ImportAsset("Odin Inspector and Serializer", "Sirenix/Editor ExtensionsSystem");
+    }
+
+    [MenuItem("Tools/Setup/Assets/Import DOTween")]
+    public static void ImportDOTween()
+    {
+        Assets.ImportAsset("DOTween HOTween v2.unitypackage", "Demigiant/Editor ExtensionsAnimation");
+    }
+
+    [MenuItem("Tools/Setup/Assets/Import Audio Preview Tool")]
+    public static void ImportAudioPreviewTool()
+    {
+        Assets.ImportAsset("Audio Preview Tool", "Warped Imagination/Editor ExtensionsAudio");
+    }
+
+    #endregion
+
+    #region Packages
+
+    [MenuItem("Tools/Setup/Packages/Install Essential Packages")] [Tooltip("Adds 2D Animation, Improved Timers, Cinemachine, and Input System")]
+    public static void InstallPackages()
+    {
+        Packages.InstallPackages(new[]
+        {
             "com.unity.2d.animation",
             "git+https://github.com/adammyhre/Unity-Improved-Timers.git",
             "com.unity.cinemachine",
@@ -30,8 +63,26 @@ public static class Setup {
         });
     }
 
+    [MenuItem("Tools/Setup/Packages/Install 2D Animation")]
+    public static void Install2DAnimation()
+    {
+        Packages.InstallPackages(new[]
+        {
+            "com.unity.2d.animation"
+        });
+    }
+
+    [MenuItem("Tools/Setup/Packages/Install Improved Timers")]
+    public static void InstallImprovedTimers()
+    {
+        Packages.InstallPackages("git+https://github.com/adammyhre/Unity-Improved-Timers.git");
+    }
+
+    #endregion
+
     [MenuItem("Tools/Setup/Create Folders")]
-    public static void CreateFolders() {
+    public static void CreateFolders()
+    {
         Folders.Create("_Project", "Animation", "Art", "Input", "Materials", "Prefabs", "Scripts", "Audio", "Audio/Music", "Audio/SFX", "Models");
         Refresh();
         Folders.Move("_Project", "Scenes");
@@ -44,8 +95,10 @@ public static class Setup {
         Refresh();
     }
 
-    static class Assets {
-        public static void ImportAsset(string asset, string folder) {
+    static class Assets
+    {
+        public static void ImportAsset(string asset, string folder)
+        {
             var basePath = GetFolderPath(SpecialFolder.ApplicationData);
             var assetsFolder = Combine(basePath, "Unity/Asset Store-5.x");
             asset = asset.EndsWith(".unitypackage") ? asset : asset + ".unitypackage";
@@ -53,25 +106,30 @@ public static class Setup {
         }
     }
 
-    static class Packages {
+    static class Packages
+    {
         static AddRequest request;
         static Queue<string> packagesToInstall = new Queue<string>();
 
-        public static void InstallPackages(string[] packages) {
-            foreach (var package in packages) {
+        public static void InstallPackages(params string[] packages)
+        {
+            foreach (var package in packages)
+            {
                 packagesToInstall.Enqueue(package);
             }
 
-            if (packagesToInstall.Count > 0) {
+            if (packagesToInstall.Count > 0)
+            {
                 StartNextPackageInstallation();
             }
         }
 
-        static async void StartNextPackageInstallation() {
+        static async void StartNextPackageInstallation()
+        {
             request = Client.Add(packagesToInstall.Dequeue());
-            
+
             while (!request.IsCompleted) await Task.Delay(10);
-            
+
             switch (request.Status)
             {
                 case StatusCode.Success:
@@ -83,52 +141,64 @@ public static class Setup {
             }
 
             if (packagesToInstall.Count <= 0) return;
-            
+
             await Task.Delay(1000);
             StartNextPackageInstallation();
         }
     }
 
-    static class Folders {
-        public static void Create(string root, params string[] folders) {
+    static class Folders
+    {
+        public static void Create(string root, params string[] folders)
+        {
             var fullpath = Combine(Application.dataPath, root);
-            if (!Directory.Exists(fullpath)) {
+            if (!Directory.Exists(fullpath))
+            {
                 Directory.CreateDirectory(fullpath);
             }
 
-            foreach (var folder in folders) {
+            foreach (var folder in folders)
+            {
                 CreateSubFolders(fullpath, folder);
             }
         }
-        
-        static void CreateSubFolders(string rootPath, string folderHierarchy) {
+
+        static void CreateSubFolders(string rootPath, string folderHierarchy)
+        {
             var folders = folderHierarchy.Split('/');
             var currentPath = rootPath;
 
-            foreach (var folder in folders) {
+            foreach (var folder in folders)
+            {
                 currentPath = Combine(currentPath, folder);
-                if (!Directory.Exists(currentPath)) {
+                if (!Directory.Exists(currentPath))
+                {
                     Directory.CreateDirectory(currentPath);
                 }
             }
         }
-        
-        public static void Move(string newParent, string folderName) {
+
+        public static void Move(string newParent, string folderName)
+        {
             var sourcePath = $"Assets/{folderName}";
-            if (IsValidFolder(sourcePath)) {
+            if (IsValidFolder(sourcePath))
+            {
                 var destinationPath = $"Assets/{newParent}/{folderName}";
                 var error = MoveAsset(sourcePath, destinationPath);
 
-                if (!string.IsNullOrEmpty(error)) {
+                if (!string.IsNullOrEmpty(error))
+                {
                     Debug.LogError($"Failed to move {folderName}: {error}");
                 }
             }
         }
-        
-        public static void Delete(string folderName) {
+
+        public static void Delete(string folderName)
+        {
             var pathToDelete = $"Assets/{folderName}";
 
-            if (IsValidFolder(pathToDelete)) {
+            if (IsValidFolder(pathToDelete))
+            {
                 DeleteAsset(pathToDelete);
             }
         }
