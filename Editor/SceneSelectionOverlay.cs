@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System;
 using System.Linq;
 using UnityEditor;
 using UnityEditor.Overlays;
@@ -12,8 +13,7 @@ using UnityEngine.UIElements;
 [Icon("d_BuildSettings.SelectedIcon")] // Set the overlay icon here
 public class SceneFavoritesOverlay : Overlay
 {
-    private List<string> favoriteScenes = new();
-    private Dictionary<string, System.DateTime> lastOpenedScenes = new();
+    private SceneList sceneList;
     private ScrollView scrollView;
     private VisualElement favoritesContainer;
 
@@ -55,9 +55,11 @@ public class SceneFavoritesOverlay : Overlay
         };
 
         var addButton = new Button(AddCurrentScene) { text = "Favorite Current Scene" };
+        var refreshButton = new Button(UpdateSceneList) { text = "Refresh" };
         var clearButton = new Button(ClearAllScenes) { text = "Clear All Favorites" };
 
         buttonContainer.Add(addButton);
+        buttonContainer.Add(refreshButton);
         buttonContainer.Add(clearButton);
 
         scrollView = new ScrollView();
@@ -73,8 +75,7 @@ public class SceneFavoritesOverlay : Overlay
 
     private void Initialize()
     {
-        LoadFavorites();
-        LoadLastOpenedScenes();
+        sceneList = SceneListManager.GetOrCreateSceneList();
     }
 
     private void AddCurrentScene()
@@ -85,18 +86,18 @@ public class SceneFavoritesOverlay : Overlay
 
     private void AddFavoriteScene(string currentScenePath)
     {
-        if (!string.IsNullOrEmpty(currentScenePath) && !favoriteScenes.Contains(currentScenePath))
+        if (!string.IsNullOrEmpty(currentScenePath) && !sceneList.favoriteScenes.Contains(currentScenePath))
         {
-            favoriteScenes.Add(currentScenePath);
-            SaveFavorites();
+            sceneList.favoriteScenes.Add(currentScenePath);
+            SaveSceneList();
             UpdateSceneList();
         }
     }
 
     private void ClearAllScenes()
     {
-        favoriteScenes.Clear();
-        SaveFavorites();
+        sceneList.favoriteScenes.Clear();
+        SaveSceneList();
         UpdateSceneList();
     }
 
@@ -105,10 +106,10 @@ public class SceneFavoritesOverlay : Overlay
         if (EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
         {
             EditorSceneManager.OpenScene(scenePath);
-            if (!favoriteScenes.Contains(scenePath))
+            if (!sceneList.favoriteScenes.Contains(scenePath))
             {
-                lastOpenedScenes[scenePath] = System.DateTime.Now;
-                SaveLastOpenedScenes();
+                sceneList.lastOpenedScenes[scenePath] = DateTime.Now;
+                SaveSceneList();
                 UpdateSceneList(); // Ensure the list is updated after opening a scene
             }
         }
@@ -116,148 +117,138 @@ public class SceneFavoritesOverlay : Overlay
 
     private void RemoveScene(string scenePath)
     {
-        favoriteScenes.Remove(scenePath);
-        SaveFavorites();
+        sceneList.favoriteScenes.Remove(scenePath);
+        SaveSceneList();
         UpdateSceneList();
     }
+private void UpdateSceneList()
+{
+    scrollView.Clear();
+    favoritesContainer.Clear();
 
-    private void UpdateSceneList()
+    List<string> allScenes = new List<string>(sceneList.favoriteScenes);
+
+    // Get all scene GUIDs and add scenes that aren't in favorites
+    string[] sceneGuids = AssetDatabase.FindAssets("t:Scene", null);
+    allScenes.AddRange(sceneGuids.Select(AssetDatabase.GUIDToAssetPath).Where(path => !sceneList.favoriteScenes.Contains(path)));
+
+    // Ensure all scenes have an entry in lastOpenedScenes
+    foreach (string scene in allScenes)
     {
-        scrollView.Clear();
-        favoritesContainer.Clear();
-
-        List<string> allScenes = new List<string>(favoriteScenes);
-
-        string[] sceneGuids = AssetDatabase.FindAssets("t:Scene", null);
-        allScenes.AddRange(sceneGuids.Select(AssetDatabase.GUIDToAssetPath).Where(path => !favoriteScenes.Contains(path)));
-
-        // Ensure all scenes in allScenes have an entry in lastOpenedScenes
-        foreach (string scene in allScenes)
+        if (!sceneList.lastOpenedScenes.ContainsKey(scene))
         {
-            if (!lastOpenedScenes.ContainsKey(scene))
-            {
-                lastOpenedScenes[scene] = System.DateTime.MinValue;
-            }
+            sceneList.lastOpenedScenes[scene] = DateTime.MinValue; // If not opened, set as minimum value
         }
-
-        // Sort scenes by favorite status and last opened time
-        allScenes.Sort((a, b) =>
-        {
-            if (favoriteScenes.Contains(a) && !favoriteScenes.Contains(b)) return -1;
-            if (!favoriteScenes.Contains(a) && favoriteScenes.Contains(b)) return 1;
-            return lastOpenedScenes[b].CompareTo(lastOpenedScenes[a]);
-        });
-
-        foreach (var scene in allScenes)
-        {
-            var sceneElement = new VisualElement
-            {
-                style =
-                {
-                    flexDirection = FlexDirection.Row,
-                    alignItems = Align.Center,
-                    justifyContent = Justify.FlexStart // Ensure elements are left-aligned
-                }
-            };
-
-            string sceneName = Path.GetFileNameWithoutExtension(scene);
-            var openLabel = new Label(sceneName)
-            {
-                style =
-                {
-                    unityTextAlign = TextAnchor.MiddleLeft,
-                    marginLeft = 5,
-                    marginRight = 5
-                }
-            };
-            openLabel.RegisterCallback<ClickEvent>(evt => OpenScene(scene));
-
-            var starButton = new Button(() => ToggleFavorite(scene))
-            {
-                text = favoriteScenes.Contains(scene) ? "★" : "☆",
-                style = { marginLeft = 5 }
-            };
-            sceneElement.Add(starButton);
-            sceneElement.Add(openLabel);
-
-            if (favoriteScenes.Contains(scene))
-            {
-                favoritesContainer.Add(sceneElement);
-            }
-            else
-            {
-                scrollView.Add(sceneElement);
-            }
-        }
-
-        if (favoriteScenes.Count > 0)
-        {
-            var separator = new VisualElement
-            {
-                style =
-                {
-                    height = 1,
-                    backgroundColor = new StyleColor(Color.gray),
-                    marginTop = 5,
-                    marginBottom = 5
-                }
-            };
-            favoritesContainer.Add(separator);
-        }
-
-        float sceneHeight = 30f;
-        float maxHeight = 500f;
-        float newHeight = Mathf.Min(allScenes.Count * sceneHeight, maxHeight);
-        scrollView.style.height = newHeight;
     }
 
-    private void ToggleFavorite(string scenePath)
+    // Sort the scenes: first by whether they're a favorite, then by last opened date, and finally by name if not recently opened
+    allScenes.Sort((a, b) =>
     {
-        if (favoriteScenes.Contains(scenePath))
+        if (sceneList.favoriteScenes.Contains(a) && !sceneList.favoriteScenes.Contains(b)) return -1;
+        if (!sceneList.favoriteScenes.Contains(a) && sceneList.favoriteScenes.Contains(b)) return 1;
+
+        DateTime aLastOpened = sceneList.lastOpenedScenes[a];
+        DateTime bLastOpened = sceneList.lastOpenedScenes[b];
+
+        // If both scenes were opened recently, sort by last opened date
+        if (aLastOpened != bLastOpened)
         {
-            favoriteScenes.Remove(scenePath);
+            return bLastOpened.CompareTo(aLastOpened); // Most recently opened first
+        }
+
+        // If both scenes have not been opened recently, sort by name alphabetically
+        return string.Compare(Path.GetFileNameWithoutExtension(a), Path.GetFileNameWithoutExtension(b), StringComparison.Ordinal);
+    });
+
+    // Add scenes to the UI (favorites and other scenes)
+    foreach (var scene in allScenes)
+    {
+        var sceneElement = new VisualElement
+        {
+            style =
+            {
+                flexDirection = FlexDirection.Row,
+                alignItems = Align.Center,
+                justifyContent = Justify.FlexStart
+            }
+        };
+
+        string sceneName = Path.GetFileNameWithoutExtension(scene);
+        var openLabel = new Label(sceneName)
+        {
+            style =
+            {
+                unityTextAlign = TextAnchor.MiddleLeft,
+                marginLeft = 5,
+                marginRight = 5
+            }
+        };
+        openLabel.RegisterCallback<ClickEvent>(evt => OpenScene(scene));
+
+        var starButton = new Button(() => ToggleFavorite(scene))
+        {
+            text = sceneList.favoriteScenes.Contains(scene) ? "★" : "☆",
+            style = { marginLeft = 5 }
+        };
+
+        sceneElement.Add(starButton);
+        sceneElement.Add(openLabel);
+
+        if (sceneList.favoriteScenes.Contains(scene))
+        {
+            favoritesContainer.Add(sceneElement);
         }
         else
         {
-            favoriteScenes.Add(scenePath);
+            scrollView.Add(sceneElement);
         }
-        SaveFavorites();
+    }
+
+    // Add a separator if there are any favorite scenes
+    if (sceneList.favoriteScenes.Count > 0)
+    {
+        var separator = new VisualElement
+        {
+            style =
+            {
+                height = 1,
+                backgroundColor = new StyleColor(Color.gray),
+                marginTop = 5,
+                marginBottom = 5
+            }
+        };
+        favoritesContainer.Add(separator);
+    }
+
+    // Adjust scroll view height based on the number of scenes
+    float sceneHeight = 30f;
+    float maxHeight = 500f;
+    float newHeight = Mathf.Min(allScenes.Count * sceneHeight, maxHeight);
+    scrollView.style.height = newHeight;
+}
+
+    private void ToggleFavorite(string scenePath)
+    {
+        if (sceneList.favoriteScenes.Contains(scenePath))
+        {
+            sceneList.favoriteScenes.Remove(scenePath);
+        }
+        else
+        {
+            sceneList.favoriteScenes.Add(scenePath);
+        }
+        SaveSceneList();
         UpdateSceneList();
     }
 
-    private void SaveFavorites()
+    private void SaveSceneList()
     {
-        string json = JsonUtility.ToJson(new SceneFavorites { scenes = favoriteScenes });
-        EditorPrefs.SetString("SceneFavorites", json);
+        EditorUtility.SetDirty(sceneList);
+        AssetDatabase.SaveAssets();
     }
 
-    private void LoadFavorites()
+    private void OnDisable()
     {
-        string json = EditorPrefs.GetString("SceneFavorites", JsonUtility.ToJson(new SceneFavorites()));
-        SceneFavorites loadedFavorites = JsonUtility.FromJson<SceneFavorites>(json);
-        favoriteScenes = loadedFavorites.scenes;
-    }
-
-    private void SaveLastOpenedScenes()
-    {
-        string json = JsonUtility.ToJson(new LastOpenedScenes { scenes = lastOpenedScenes });
-        EditorPrefs.SetString("LastOpenedScenes", json);
-    }
-
-    private void LoadLastOpenedScenes()
-    {
-        string json = EditorPrefs.GetString("LastOpenedScenes", JsonUtility.ToJson(new LastOpenedScenes()));
-        LastOpenedScenes loadedLastOpenedScenes = JsonUtility.FromJson<LastOpenedScenes>(json);
-        lastOpenedScenes = loadedLastOpenedScenes.scenes;
-    }
-
-    private class SceneFavorites
-    {
-        public List<string> scenes = new List<string>();
-    }
-
-    private class LastOpenedScenes
-    {
-        public Dictionary<string, System.DateTime> scenes = new Dictionary<string, System.DateTime>();
+        SaveSceneList();
     }
 }

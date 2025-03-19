@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Random = System.Random;
 
 public static class Extensions
 {
@@ -8,8 +9,18 @@ public static class Extensions
     /// <summary>
     /// Returns a new Vector3 with the specified values, or the original values if not specified
     /// </summary>
-    public static Vector3 With(this Vector3 vector, float? x = null, float? y = null, float? z = null) => new Vector3(x ?? vector.x, y ?? vector.y, z ?? vector.z);
-    public static Vector3Int With(this Vector3Int vector, float? x = null, float? y = null, float? z = null) => new Vector3Int((int)(x ?? vector.x), (int)(y ?? vector.y), (int)(z ?? vector.z));
+    public static Vector3 With(this Vector3 vector, float? x = null, float? y = null, float? z = null) => new (x ?? vector.x, y ?? vector.y, z ?? vector.z);
+    public static Vector3Int With(this Vector3Int vector, float? x = null, float? y = null, float? z = null) => new ((int)(x ?? vector.x), (int)(y ?? vector.y), (int)(z ?? vector.z));
+    public static Vector3 WithOffset(this Vector3 vector, Vector3 offset) => new (vector.x + offset.x, vector.y + offset.y, vector.z + offset.z);
+    public static Vector3 RandomOffset(this Vector3 vector, float range) => vector + UnityEngine.Random.insideUnitSphere * range;
+
+    public static Vector3 Remap(this Vector3 vector, float min, float max)
+    {
+        vector.x = Mathf.Lerp(min, max, vector.x);
+        vector.y = Mathf.Lerp(min, max, vector.y);
+        vector.z = Mathf.Lerp(min, max, vector.z);
+        return vector;
+    }
 
 
     public static Vector3Int ToInt(this Vector3 vector) => new Vector3Int(Mathf.CeilToInt(vector.x), Mathf.CeilToInt(vector.y), Mathf.CeilToInt(vector.z));
@@ -22,6 +33,13 @@ public static class Extensions
     /// Randomizes a each value of the Vector3 between the specified min and max values
     /// </summary>
     public static Vector3 Random(this Vector3 vector, float min, float max) => new Vector3(UnityEngine.Random.Range(min, max), UnityEngine.Random.Range(min, max), UnityEngine.Random.Range(min, max));
+    public static Vector3 Random(this Vector3 vector, Vector3 minPosition, Vector3 maxPosition)
+    {
+        float x = UnityEngine.Random.Range(minPosition.x, maxPosition.x);
+        float y = UnityEngine.Random.Range(minPosition.y, maxPosition.y);
+        float z = UnityEngine.Random.Range(minPosition.z, maxPosition.z);
+        return new Vector3(x, y, z);
+    }
 
     /// <summary>
     /// Rounds each value of the Vector3 to the nearest whole number
@@ -33,6 +51,10 @@ public static class Extensions
     public static Vector3 RoundToFloor(this Vector3 vector) => new(Mathf.Floor(vector.x), Mathf.Floor(vector.y), Mathf.Floor(vector.z));
 
     public static Vector3 RotationTowards(this Vector3 vector, Vector3 target) => vector - target;
+    
+    public static Vector3 Clamp(this Vector3 vector, Vector3 min, Vector3 max) => new Vector3(vector.x.Clamp(min.x, max.x), vector.y.Clamp(min.y, max.y), vector.z.Clamp(min.z, max.z));
+    public static Vector3 ClampFloat(this Vector3 vector, float min, float max) => new Vector3(vector.x.Clamp(min, max), vector.y.Clamp(min, max), vector.z.Clamp(min, max));
+    
     #endregion
 
     #region Vector2 Extensions
@@ -41,6 +63,7 @@ public static class Extensions
     /// </summary>
     public static Vector2 Random(this Vector2 vector, float min, float max) => new Vector2(UnityEngine.Random.Range(min, max), UnityEngine.Random.Range(min, max));
 
+    public static Vector2 With(this Vector2 vector, float? x = null, float? y = null) => new (x ?? vector.x, y ?? vector.y);
     #endregion
 
     #region GameObject Extensions   
@@ -55,6 +78,24 @@ public static class Extensions
         if (!component)
             component = gameObject.AddComponent<T>();
         return component;
+    }
+    public static GameObject Instantiate(this GameObject obj, Vector3? position = null, Quaternion? rotation = null, Transform parent = null)
+    {
+        return Object.Instantiate(obj, position ?? Vector3.zero, rotation ?? Quaternion.identity, parent);
+    }
+    public static T GetComponentOrInChildren<T>(this GameObject gameObject) where T : Component
+    {
+        T component = gameObject.GetComponent<T>();
+        if (!component)
+            component = gameObject.GetComponentInChildren<T>();
+        return component;
+    }
+    public static bool TryAddComponent<T>(this GameObject gameObject) where T : Component
+    {
+        if (!gameObject.GetComponent<T>()) return false;
+        
+        gameObject.AddComponent<T>();
+        return true;
     }
 
     /// <summary>
@@ -78,6 +119,14 @@ public static class Extensions
     {
         gameObject.transform.DisableChildren();
     }
+    
+    public static void Destroy(this GameObject gameObject)
+    {
+        if(Application.isPlaying)
+            Object.Destroy(gameObject);
+        else
+            Object.DestroyImmediate(gameObject);
+    }
 
     /// <summary>
     /// Enables all child objects of the GameObject.
@@ -87,7 +136,6 @@ public static class Extensions
         gameObject.transform.EnableChildren();
     }
     #endregion
-
 
     #region Transform Extensions
     /// <summary>
@@ -119,6 +167,17 @@ public static class Extensions
         parent.PerformActionOnChildren(child => Object.Destroy(child.gameObject));
     }
     
+    public static T GetComponentOrInChildren<T>(this Transform transform) where T : Component
+    {
+        return transform.gameObject.GetComponentOrInChildren<T>();
+    }
+    public static void Destroy(this Transform transform)
+    {
+        if(Application.isPlaying)
+            Object.Destroy(transform.gameObject);
+        else
+            Object.DestroyImmediate(transform.gameObject);
+    }
     public static List<Transform> GetChildren(this Transform parent)
     {
         List<Transform> children = new List<Transform>();
@@ -169,7 +228,6 @@ public static class Extensions
     }
     #endregion
 
-
     #region Float Extensions
 
     public static float Quadratic(this float value, float spacing, int index, float vertex)
@@ -180,16 +238,14 @@ public static class Extensions
     {
         if (toMax > toMin)
             return toMin + (value - fromMin) * (toMax - toMin) / (fromMax - fromMin);
-
-        else
-            return toMax + (fromMax - value) * (toMin - toMax) / (fromMax - fromMin);
-
+            
+        return toMax + (fromMax - value) * (toMin - toMax) / (fromMax - fromMin);
     }
 
     public static float Squared(this float value) => value * value;
 
     public static float Random(this float value, float min, float max) => UnityEngine.Random.Range(min, max);
-
+    public static float AddRandom(this float value, float range) => value + UnityEngine.Random.Range(-range, range);
 
     public static bool Proximity(this float value, float target, float range)
     {
@@ -218,7 +274,6 @@ public static class Extensions
     }
     #endregion
 
-
     #region Bool Extensions
 
     public static bool Invert(this bool value)
@@ -227,7 +282,6 @@ public static class Extensions
     }
 
     #endregion
-
 
     #region int Extensions
 
@@ -269,9 +323,37 @@ public static class Extensions
 
     #endregion
 
+    #region List Extensions
+    
+    public static bool TryGet<T>(this List<T> list, T input, out T result)
+    {
+        if(list.Contains(input))
+        {
+            result = input;
+            return true;
+        }
+        result = default;
+        return false;
+    }
+
+    public static bool TryGetRandom<T>(this List<T> list, out T result)
+    {
+        if (list.Count == 0)
+        {
+            result = default;
+            return false;
+        }
+
+        result = list[UnityEngine.Random.Range(0, list.Count)];
+        return true;
+    }
+    public static T GetRandom<T>(this List<T> list)
+    {
+        return list[UnityEngine.Random.Range(0, list.Count)];
+    }
     public static List<T> Shuffle<T>(this List<T> list)
     {
-        System.Random rng = new();
+        Random rng = new();
         int n = list.Count;
         while (n > 1)
         {
@@ -283,4 +365,49 @@ public static class Extensions
         }
         return list;
     }
+    
+    public static void AddMany<T>(this List<T> list, params T[] items)
+    {
+        list.AddRange(items);
+    }
+
+    #endregion
+    
+    #region Color Extensions
+    
+    public static Color Random(this Color color, float min, float max)
+    {
+        return new Color(UnityEngine.Random.Range(min, max), UnityEngine.Random.Range(min, max), UnityEngine.Random.Range(min, max));
+    }
+    
+    public static Color WithAlpha(this Color color, float alpha)
+    {
+        return new Color(color.r, color.g, color.b, alpha);
+    }
+    
+    #endregion
+    
+    #region Material Extensions
+    
+    public static Material CreateInstance(this Material material)
+    {
+        return new Material(material);
+    }
+    
+    #endregion
+    
+    #region RenderTexture Extensions
+    
+    public static void SetWidthAndHeight(this RenderTexture renderTexture, int width, int height)
+    {
+        renderTexture.width = width;
+        renderTexture.height = height;
+    }
+    public static RenderTexture CreateInstance(this RenderTexture renderTexture)
+    {
+        return new RenderTexture(renderTexture);
+    }
+    
+    #endregion
+    
 }
