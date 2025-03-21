@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UIElements;
 using Random = System.Random;
 
 public static class Extensions
@@ -433,4 +434,40 @@ public static class Extensions
     
     #endregion
     
+    #region VisualElementExtensions
+    public static VisualElement CreateChild(this VisualElement parent, params string[] classes)
+    {
+        var child = new VisualElement();
+        child.AddClass(classes).AddTo(parent);
+        return child;
+    }
+    
+    public static T CreateChild<T>(this VisualElement parent, params string[] classes) where T : VisualElement, new()
+    {
+        var child = new T();
+        child.AddClass(classes).AddTo(parent);
+        return child;
+    }
+    public static VisualElement AddTo(this VisualElement child, VisualElement parent)
+    {
+        parent.Add(child);
+        return child;
+    }
+    
+    public static T AddClass<T>(this T element, params string[] classes) where T : VisualElement
+    {
+        foreach (var className in classes)
+        {
+            if(!string.IsNullOrEmpty(className))
+                element.AddToClassList(className);
+        }
+        return element;
+    }
+    
+    public static T WithManipulator<T>(this T element, IManipulator manipulator) where T : VisualElement
+    {
+        element.AddManipulator(manipulator);
+        return element;
+    }
+    #endregion
 }
