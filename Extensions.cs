@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using Object = UnityEngine.Object;
+using UnityEngine.UIElements;
 using Random = System.Random;
 
 public static class Extensions
@@ -434,23 +433,40 @@ public static class Extensions
     }
     
     #endregion
-    
-    public static T MakeCopy<T>(this T obj) where T : class
+    #region VisualElementExtensions
+    public static VisualElement CreateChild(this VisualElement parent, params string[] classes)
     {
-        if (obj == null)
-            return null;
-
-        var type = obj.GetType();
-        var copy = Activator.CreateInstance(type);
-        foreach (var field in type.GetFields())
-        {
-            field.SetValue(copy, field.GetValue(obj));
-        }
-        foreach (var property in type.GetProperties())
-        {
-            if (property.CanWrite)
-                property.SetValue(copy, property.GetValue(obj));
-        }
-        return copy as T;
+        var child = new VisualElement();
+        child.AddClass(classes).AddTo(parent);
+        return child;
     }
+    
+    public static T CreateChild<T>(this VisualElement parent, params string[] classes) where T : VisualElement, new()
+    {
+        var child = new T();
+        child.AddClass(classes).AddTo(parent);
+        return child;
+    }
+    public static VisualElement AddTo(this VisualElement child, VisualElement parent)
+    {
+        parent.Add(child);
+        return child;
+    }
+    
+    public static T AddClass<T>(this T element, params string[] classes) where T : VisualElement
+    {
+        foreach (var className in classes)
+        {
+            if(!string.IsNullOrEmpty(className))
+                element.AddToClassList(className);
+        }
+        return element;
+    }
+    
+    public static T WithManipulator<T>(this T element, IManipulator manipulator) where T : VisualElement
+    {
+        element.AddManipulator(manipulator);
+        return element;
+    }
+    #endregion
 }
