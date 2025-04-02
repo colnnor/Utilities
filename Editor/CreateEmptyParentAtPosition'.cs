@@ -4,7 +4,7 @@ using UnityEngine;
 
 public static class CreateEmptyParentAtPosition
 {
-    [MenuItem("GameObject/Create Empty Parent At Position %#&g", priority = 0, secondaryPriority = 3f)]
+    [MenuItem("GameObject/Create Empty Parent At Position %g", priority = 0, secondaryPriority = 3f)]
     static void CreateEmptyParentAtSamePosition()
     {
         Transform selected = Selection.activeTransform;

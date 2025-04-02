@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Object = UnityEngine.Object;
 using Random = System.Random;
 
 public static class Extensions
@@ -433,4 +435,22 @@ public static class Extensions
     
     #endregion
     
+    public static T MakeCopy<T>(this T obj) where T : class
+    {
+        if (obj == null)
+            return null;
+
+        var type = obj.GetType();
+        var copy = Activator.CreateInstance(type);
+        foreach (var field in type.GetFields())
+        {
+            field.SetValue(copy, field.GetValue(obj));
+        }
+        foreach (var property in type.GetProperties())
+        {
+            if (property.CanWrite)
+                property.SetValue(copy, property.GetValue(obj));
+        }
+        return copy as T;
+    }
 }
