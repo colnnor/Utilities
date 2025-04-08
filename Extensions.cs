@@ -433,6 +433,7 @@ public static class Extensions
     }
     
     #endregion
+    
     #region VisualElementExtensions
     public static VisualElement CreateChild(this VisualElement parent, params string[] classes)
     {
@@ -467,6 +468,26 @@ public static class Extensions
     {
         element.AddManipulator(manipulator);
         return element;
+    }
+    #endregion
+    
+    #region Queue Extensions
+    
+    public static void Remove<T>(this Queue<T> queue, T itemToRemove)
+    {
+        var tempQueue = new Queue<T>();
+        while(queue.Count > 0)
+        {
+            T item = queue.Dequeue();
+            if (!item.Equals(itemToRemove))
+            {
+                tempQueue.Enqueue(item);
+            }
+        }
+        while(tempQueue.Count > 0)
+        {
+            queue.Enqueue(tempQueue.Dequeue());
+        }
     }
     #endregion
 }
