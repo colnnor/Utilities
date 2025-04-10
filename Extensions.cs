@@ -14,7 +14,10 @@ public static class Extensions
     public static Vector3Int With(this Vector3Int vector, float? x = null, float? y = null, float? z = null) => new ((int)(x ?? vector.x), (int)(y ?? vector.y), (int)(z ?? vector.z));
     public static Vector3 WithOffset(this Vector3 vector, Vector3 offset) => new (vector.x + offset.x, vector.y + offset.y, vector.z + offset.z);
     public static Vector3 RandomOffset(this Vector3 vector, float range) => vector + UnityEngine.Random.insideUnitSphere * range;
-
+    public static bool IsHorizontal(this Vector3 vector)
+    {
+        return Mathf.Abs(Vector3.Dot(vector, Vector3.right)) > 0.5f;
+    }
     public static Vector3 Remap(this Vector3 vector, float min, float max)
     {
         vector.x = Mathf.Lerp(min, max, vector.x);
@@ -257,6 +260,11 @@ public static class Extensions
     public static float Quadratic(this float value, float spacing, int index, float vertex)
     {
         return spacing * (index - vertex).Squared() + vertex;
+    }
+    
+    public static float Abs(this float value)
+    {
+        return Mathf.Abs(value);
     }
     public static float Remap(this float value, float fromMin, float fromMax, float toMin, float toMax)
     {

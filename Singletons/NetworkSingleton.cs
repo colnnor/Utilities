@@ -1,6 +1,5 @@
-﻿using UnityEngine;
-#if UNITY_NETCODE
-using Unity.Netcode;
+﻿using Unity.Netcode;
+using UnityEngine;
 
 public class NetworkSingleton<T> : NetworkBehaviour where T : Component
 {
@@ -56,4 +55,3 @@ public class NetworkSingleton<T> : NetworkBehaviour where T : Component
         }
     }
 }
-#endif
