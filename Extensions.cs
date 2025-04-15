@@ -14,6 +14,10 @@ public static class Extensions
     public static Vector3Int With(this Vector3Int vector, float? x = null, float? y = null, float? z = null) => new ((int)(x ?? vector.x), (int)(y ?? vector.y), (int)(z ?? vector.z));
     public static Vector3 WithOffset(this Vector3 vector, Vector3 offset) => new (vector.x + offset.x, vector.y + offset.y, vector.z + offset.z);
     public static Vector3 RandomOffset(this Vector3 vector, float range) => vector + UnityEngine.Random.insideUnitSphere * range;
+    public static Vector3 RightFromUpDirection(this Vector3 up, Vector3 forward)
+    {
+        return Vector3.Cross(up, forward).normalized;
+    }
     public static bool IsHorizontal(this Vector3 vector)
     {
         return Mathf.Abs(Vector3.Dot(vector, Vector3.right)) > 0.5f;
@@ -83,6 +87,7 @@ public static class Extensions
             component = gameObject.AddComponent<T>();
         return component;
     }
+    
     public static void SetPosition(this GameObject gameObject, Vector3 position)
     {
         gameObject.transform.position = position;
