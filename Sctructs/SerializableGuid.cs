@@ -74,3 +74,9 @@ public struct SerializableGuid : IEquatable<SerializableGuid> {
     public static bool operator ==(SerializableGuid left, SerializableGuid right) => left.Equals(right);
     public static bool operator !=(SerializableGuid left, SerializableGuid right) => !(left == right); 
 }
+
+public static class SerializableGuidExtensions
+{
+    public static SerializableGuid ToSerializableGuid(this Guid guid) => new SerializableGuid(guid);
+
+}

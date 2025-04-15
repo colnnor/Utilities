@@ -14,23 +14,10 @@ public static class Helpers
     {
         get
         {
-            if (camera == null) camera = Camera.main;
+            if (!camera) camera = Camera.main;
+            if(!camera) camera = Object.FindFirstObjectByType<Camera>();
             return camera;
         }
-    }
-
-    private static readonly Dictionary<float, WaitForSeconds> WaitDictionary = new();
-    /// <summary>
-    /// If the provided WaitForSeconds already exists, it will return the existing object. Otherwise, it will create a new one.
-    /// </summary>
-    /// <param name="time">The time to wait.</param>
-    /// <returns>The WaitForSeconds object.</returns>
-    public static WaitForSeconds GetWait(float time)
-    {
-        if (WaitDictionary.TryGetValue(time, out WaitForSeconds wait)) return wait;
-
-        WaitDictionary[time] = new WaitForSeconds(time);
-        return WaitDictionary[time];
     }
 
     private static PointerEventData eventDataCurrentPosition;
