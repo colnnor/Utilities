@@ -200,7 +200,6 @@ public static class Setup
 
         static void CreateSubFolders(string rootPath, string folderHierarchy)
         {
-            Debug.Log($"Creating folders in {rootPath}");
             var folders = folderHierarchy.Split('/');
             var currentPath = rootPath;
 

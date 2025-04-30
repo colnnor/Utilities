@@ -178,6 +178,13 @@ public static class Extensions
         foreach (Transform child in parent)
             yield return child;
     }
+    
+    public static void ResetLocal(this Transform transform, bool position = true, bool rotation = true, bool scale = true)
+    {
+        if (position) transform.localPosition = Vector3.zero;
+        if (rotation) transform.localRotation = Quaternion.identity;
+        if (scale) transform.localScale = Vector3.one;
+    }
     public static T GetOrAddComponent<T>(this Transform transform) where T : Component
     {
         return transform.gameObject.GetOrAddComponent<T>();
@@ -402,7 +409,18 @@ public static class Extensions
         }
         return list;
     }
-    
+    /// <summary>
+    /// Clears the list and destroys all MonoBehaviour GameObjects in it.
+    /// </summary>
+    public static List<T> ClearAndDestroy<T>(this List<T> list) where T : MonoBehaviour
+    {
+        foreach (var item in list.Where(item => item).Select(i => i.gameObject))
+        {
+            Object.Destroy(item);
+        }
+        list.Clear();
+        return list;
+    }
     public static void AddMany<T>(this List<T> list, params T[] items)
     {
         list.AddRange(items);
