@@ -2,10 +2,12 @@ using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
 using TMPro;
+using Unity.VisualScripting;
 
 public static class Helpers
 {
     private static Camera camera;
+
     /// <summary>
     /// Gets the main camera in the scene.
     /// </summary>
@@ -15,13 +17,14 @@ public static class Helpers
         get
         {
             if (!camera) camera = Camera.main;
-            if(!camera) camera = Object.FindFirstObjectByType<Camera>();
+            if (!camera) camera = Object.FindFirstObjectByType<Camera>();
             return camera;
         }
     }
 
     private static PointerEventData eventDataCurrentPosition;
     private static List<RaycastResult> results;
+
     /// <summary>
     /// Checks if the mouse is over any UI element.
     /// </summary>
@@ -50,31 +53,34 @@ public static class Helpers
     /// <summary>
     /// Creates a world text object at the given location
     /// </summary>
-    public static TextMeshPro CreateWorldText(string text, Transform parent = null, Vector3 localPosition = default(Vector3), int fontSize = 11, Color? color = null, TextAlignmentOptions textAlignment = TextAlignmentOptions.Midline, int sortingOrder = 5000)
+    public static TextMeshPro CreateWorldText(string text, Transform parent = null, Vector3 localPosition = default, Quaternion rotation = default, int fontSize = 11, Color? color = null,
+        TextAlignmentOptions textAlignment = TextAlignmentOptions.Midline, int sortingOrder = 5000)
     {
         if (color == null) color = Color.white;
-        return CreateWorldTextObject(parent, text, localPosition, fontSize, (Color)color, textAlignment, sortingOrder);
+        return CreateWorldTextObject(parent, text, localPosition, rotation, fontSize, (Color)color, textAlignment, sortingOrder);
     }
+
     /// <summary>
     /// Creates a world text object at the given location
     /// </summary>
-    public static TextMeshPro CreateWorldText(string text, Transform parent = null, Vector3 localPosition = default(Vector3), Color? color = null, int fontSize = 11)
+    public static TextMeshPro CreateWorldText(string text, Transform parent = null, Vector3 localPosition = default, Quaternion rotation = default, Color? color = null, int fontSize = 11)
     {
         TextAlignmentOptions textAlignment = TextAlignmentOptions.Midline;
         int sortingOrder = 5000;
         if (color == null) color = Color.white;
-        return CreateWorldTextObject(parent, text, localPosition, fontSize, (Color)color, textAlignment, sortingOrder);
+        return CreateWorldTextObject(parent, text, localPosition, rotation, fontSize, (Color)color, textAlignment, sortingOrder);
     }
 
-    private static TextMeshPro CreateWorldTextObject(Transform parent, string text, Vector3 localPosition, int fontSize, Color color, TextAlignmentOptions textAlignment, int sortingOrder)
+    private static TextMeshPro CreateWorldTextObject(Transform parent, string text, Vector3 localPosition, Quaternion rotation, int fontSize, Color color, TextAlignmentOptions textAlignment, int sortingOrder)
     {
         GameObject textObject = new("World_Text", typeof(TextMeshPro));
         Transform transform = textObject.transform;
-        MeshRenderer renderer = textObject.GetComponent<MeshRenderer>();
+        MeshRenderer renderer = textObject.GetOrAddComponent<MeshRenderer>();
         renderer.sortingOrder = sortingOrder;
         transform.SetParent(parent);
         transform.localPosition = localPosition;
-        TextMeshPro textMesh = textObject.GetComponent<TextMeshPro>();
+        transform.localRotation = rotation;
+        TextMeshPro textMesh = textObject.GetOrAddComponent<TextMeshPro>();
         textMesh.text = text;
         textMesh.color = color;
         textMesh.alignment = textAlignment;

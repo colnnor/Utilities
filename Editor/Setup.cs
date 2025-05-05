@@ -165,6 +165,23 @@ public static class Setup
         }
     }
 
+    [MenuItem("Assets/Create/Create Base Folders", false, -235)]
+    public static void CreateBaseFolders()
+    {
+        var selectedFolderPath = Selection.activeObject ? GetAssetPath(Selection.activeObject) : string.Empty;
+        if (selectedFolderPath.StartsWith("Assets/"))
+        {
+            selectedFolderPath = selectedFolderPath["Assets/".Length..];
+        }
+        if (string.IsNullOrEmpty(selectedFolderPath))
+        {
+            Debug.LogError("No folder selected.");
+            return;
+        }
+        Debug.Log($"Creating folders in {selectedFolderPath}");
+        Folders.Create(selectedFolderPath, "Art", "Audio", "Input", "Materials", "Models", "Prefabs", "Scenes", "Scripts");
+        Refresh();
+    }
     static class Folders
     {
         public static void Create(string root, params string[] folders)
