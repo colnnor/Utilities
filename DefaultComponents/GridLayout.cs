@@ -2,6 +2,12 @@ using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
+public enum GridOrientation
+{
+    XZ,
+    XY
+}
+
 public class GridLayout : MonoBehaviour
 {
     [SerializeField] private GridOrientation gridOrientation = GridOrientation.XZ;
