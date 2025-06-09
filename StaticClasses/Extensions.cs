@@ -29,7 +29,7 @@ public static class Extensions
         vector.z = Mathf.Lerp(min, max, vector.z);
         return vector;
     }
-
+    public static float RandomBetween(this Vector3 vector) => UnityEngine.Random.Range(vector.x, vector.y);
 
     public static Vector3Int ToInt(this Vector3 vector) => new Vector3Int(Mathf.CeilToInt(vector.x), Mathf.CeilToInt(vector.y), Mathf.CeilToInt(vector.z));
     /// <summary>
@@ -70,6 +70,7 @@ public static class Extensions
     /// Randomizes a each value of the Vector2 between the specified min and max values
     /// </summary>
     public static Vector2 Random(this Vector2 vector, float min, float max) => new Vector2(UnityEngine.Random.Range(min, max), UnityEngine.Random.Range(min, max));
+    public static float RandomBetween(this Vector2 vector) => UnityEngine.Random.Range(vector.x, vector.y);
 
     public static Vector2 With(this Vector2 vector, float? x = null, float? y = null) => new (x ?? vector.x, y ?? vector.y);
     #endregion

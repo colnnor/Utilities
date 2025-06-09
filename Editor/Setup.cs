@@ -59,6 +59,7 @@ public static class Setup
             "com.unity.2d.animation",
             "com.unity.netcode.gameobjects",
             "git+https://github.com/adammyhre/Unity-Improved-Timers.git",
+            "git+https://github.com/MasyoLab/UnityTools-FavoritesAsset.git?path=Assets/MasyoLab/FavoritesAsset",
             "com.unity.cinemachine",
             "com.unity.inputsystem"
         });
@@ -88,6 +89,11 @@ public static class Setup
     public static void InstallImprovedTimers()
     {
         Packages.InstallPackages("git+https://github.com/adammyhre/Unity-Improved-Timers.git");
+    }
+    [MenuItem("Tools/Setup/Packages/Install Favorites Asset")]
+    public static void InstallFavorites()
+    {
+        Packages.InstallPackages("git+https://github.com/MasyoLab/UnityTools-FavoritesAsset.git?path=Assets/MasyoLab/FavoritesAsset");
     }
     
     [MenuItem("Tools/Setup/Packages/Install Cinemachine")]
