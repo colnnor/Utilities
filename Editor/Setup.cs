@@ -178,8 +178,8 @@ public static class Setup
             Debug.LogError("No folder selected.");
             return;
         }
-        Debug.Log($"Creating folders in {selectedFolderPath}");
-        Folders.Create(selectedFolderPath, "Art", "Audio", "Input", "Materials", "Models", "Prefabs", "Scenes", "Scripts");
+        //Debug.Log($"Creating folders in {selectedFolderPath}");
+        Folders.Create(selectedFolderPath, "Art", "Audio", "Input", "Misc", "VFX", "RenderTextures","Media", "Materials", "Models", "Prefabs", "Scenes", "Scripts");
         Refresh();
     }
     static class Folders

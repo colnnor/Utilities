@@ -12,5 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 895c35c4988eb67469b849b4beda81e1, type: 3}
   m_Name: SceneList
   m_EditorClassIdentifier: 
-  favoriteScenes: []
+  favoriteScenes:
+  - Assets/_Project/CylinderTransformMapping/Scenes/CylinderTransform.unity
   allScenes: []

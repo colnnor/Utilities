@@ -6,3 +6,10 @@ public class FloatIncrementAttribute : PropertyAttribute
     {
     }
 }
+
+public class IntIncrementAttribute : PropertyAttribute
+{
+    public IntIncrementAttribute()
+    {
+    }
+}
