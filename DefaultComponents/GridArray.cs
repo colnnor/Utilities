@@ -8,7 +8,7 @@ public enum GridOrientation
     XY
 }
 
-public class GridLayout : MonoBehaviour
+public class GridArray : MonoBehaviour
 {
     [SerializeField] private GridOrientation gridOrientation = GridOrientation.XZ;
     [SerializeField] private int columns = 1;

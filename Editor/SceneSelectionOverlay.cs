@@ -16,62 +16,181 @@ public class SceneFavoritesOverlay : Overlay
     private SceneList sceneList;
     private ScrollView scrollView;
     private VisualElement favoritesContainer;
+    private VisualElement container;
+public override VisualElement CreatePanelContent()
+{
+    Initialize();
 
-    public override VisualElement CreatePanelContent()
+    container = new VisualElement
     {
-        Initialize();
-
-        var container = new VisualElement
+        style =
         {
-            style =
-            {
-                flexDirection = FlexDirection.Column,
-                paddingTop = 10,
-                paddingLeft = 10,
-                paddingRight = 10,
-                paddingBottom = 10,
-                minWidth = 100,
-                minHeight = 50
-            }
-        };
+            flexDirection = FlexDirection.Column,
+            paddingTop = 10,
+            paddingLeft = 10,
+            paddingRight = 10,
+            paddingBottom = 10,
+            minWidth = 100,
+            minHeight = 200,
+        }
+    };
 
-        favoritesContainer = new VisualElement
+    var searchField = new TextField("Search Scenes")
+    {
+        style =
         {
-            style =
-            {
-                flexDirection = FlexDirection.Column,
-                alignItems = Align.FlexStart // Align items to the start (left)
-            }
-        };
+            marginBottom = 10
+        }
+    };
+    searchField.RegisterValueChangedCallback(evt =>
+    {
+        UpdateSceneList(evt.newValue);
+    });
 
-        var buttonContainer = new VisualElement
+    favoritesContainer = new VisualElement
+    {
+        style =
         {
-            style =
-            {
-                paddingTop = 10,
-                flexDirection = FlexDirection.Row,
-                justifyContent = Justify.SpaceBetween
-            }
-        };
+            flexDirection = FlexDirection.Column,
+            alignItems = Align.FlexStart
+        }
+    };
 
-        var addButton = new Button(AddCurrentScene) { text = "Favorite Current Scene" };
-        var refreshButton = new Button(UpdateSceneList) { text = "Refresh" };
-        var clearButton = new Button(ClearAllScenes) { text = "Clear All Favorites" };
+    var buttonContainer = new VisualElement
+    {
+        style =
+        {
+            paddingTop = 10,
+            flexDirection = FlexDirection.Row,
+            justifyContent = Justify.SpaceBetween
+        }
+    };
 
-        buttonContainer.Add(addButton);
-        buttonContainer.Add(refreshButton);
-        buttonContainer.Add(clearButton);
+    var addButton = new Button(AddCurrentScene) { text = "Favorite Current Scene" };
+    var refreshButton = new Button(() => UpdateSceneList("")) { text = "Refresh" };
+    var clearButton = new Button(ClearAllScenes) { text = "Clear All Favorites" };
 
-        scrollView = new ScrollView();
+    buttonContainer.Add(addButton);
+    buttonContainer.Add(refreshButton);
+    buttonContainer.Add(clearButton);
 
-        container.Add(favoritesContainer);
-        container.Add(scrollView);
-        container.Add(buttonContainer);
+    scrollView = new ScrollView();
 
-        UpdateSceneList();
+    container.Add(searchField);
+    container.Add(favoritesContainer);
+    container.Add(scrollView);
+    container.Add(buttonContainer);
 
-        return container;
+    UpdateSceneList("");
+    return container;
+}
+
+private void UpdateSceneList(string searchTerm)
+{
+    scrollView.Clear();
+    favoritesContainer.Clear();
+
+    List<string> allScenes = new List<string>(sceneList.favoriteScenes);
+
+    string[] sceneGuids = AssetDatabase.FindAssets("t:Scene", null);
+    allScenes.AddRange(sceneGuids.Select(AssetDatabase.GUIDToAssetPath).Where(path => !sceneList.favoriteScenes.Contains(path)));
+
+    foreach (string scene in allScenes)
+    {
+        if (!sceneList.lastOpenedScenes.ContainsKey(scene))
+        {
+            sceneList.lastOpenedScenes[scene] = DateTime.MinValue;
+        }
     }
+
+    allScenes = allScenes.Where(scene =>
+        string.IsNullOrEmpty(searchTerm) || Path.GetFileNameWithoutExtension(scene).Contains(searchTerm, StringComparison.OrdinalIgnoreCase)).ToList();
+
+    allScenes.Sort((a, b) =>
+    {
+        if (sceneList.favoriteScenes.Contains(a) && !sceneList.favoriteScenes.Contains(b)) return -1;
+        if (!sceneList.favoriteScenes.Contains(a) && sceneList.favoriteScenes.Contains(b)) return 1;
+
+        DateTime aLastOpened = sceneList.lastOpenedScenes[a];
+        DateTime bLastOpened = sceneList.lastOpenedScenes[b];
+
+        if (aLastOpened != bLastOpened)
+        {
+            return bLastOpened.CompareTo(aLastOpened);
+        }
+
+        return string.Compare(Path.GetFileNameWithoutExtension(a), Path.GetFileNameWithoutExtension(b), StringComparison.Ordinal);
+    });
+
+    foreach (var scene in allScenes)
+    {
+        var sceneElement = new VisualElement
+        {
+            style =
+            {
+                flexDirection = FlexDirection.Row,
+                alignItems = Align.Center,
+                justifyContent = Justify.FlexStart
+            }
+        };
+
+        string sceneName = Path.GetFileNameWithoutExtension(scene);
+        var openLabel = new Label(sceneName)
+        {
+            style =
+            {
+                unityTextAlign = TextAnchor.MiddleLeft,
+                marginLeft = 5,
+                marginRight = 5
+            }
+        };
+        openLabel.RegisterCallback<ClickEvent>(evt => OpenScene(scene));
+
+        var starButton = new Button(() => ToggleFavorite(scene))
+        {
+            text = sceneList.favoriteScenes.Contains(scene) ? "★" : "☆",
+            style = { marginLeft = 5 }
+        };
+
+        sceneElement.Add(starButton);
+        sceneElement.Add(openLabel);
+
+        if (sceneList.favoriteScenes.Contains(scene))
+        {
+            favoritesContainer.Add(sceneElement);
+        }
+        else
+        {
+            scrollView.Add(sceneElement);
+        }
+    }
+
+    if (sceneList.favoriteScenes.Count > 0)
+    {
+        var separator = new VisualElement
+        {
+            style =
+            {
+                height = 1,
+                backgroundColor = new StyleColor(Color.gray),
+                marginTop = 5,
+                marginBottom = 5
+            }
+        };
+        favoritesContainer.Add(separator);
+    }
+
+    // Adjust scroll view height dynamically based on the number of scenes
+    float sceneHeight = 30f;
+    float maxHeight = 500f;
+    float scenesHeight = allScenes.Count * sceneHeight;
+    float newHeight = Mathf.Min(scenesHeight, maxHeight);
+    
+    scrollView.style.height = newHeight;
+    
+    container.style.height = newHeight + favoritesContainer.resolvedStyle.height + 100; // Adjust container height to fit scroll view and favorites
+
+}
 
     private void Initialize()
     {

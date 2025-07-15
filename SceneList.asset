@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: SceneList
   m_EditorClassIdentifier: 
   favoriteScenes:
-  - Assets/_Project/CylinderTransformMapping/Scenes/CylinderTransform.unity
+  - Assets/_Students/Scenes/MiningGame.unity
+  - Assets/_Project/Scenes/LevelOne.unity
   allScenes: []
