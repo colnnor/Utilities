@@ -1,14 +1,14 @@
 using System;
-using Sirenix.OdinInspector;
+//using Sirenix.OdinInspector;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class BasicShaker : MonoBehaviour
 {
     [SerializeField] private bool infiniteShake = false;
-    [HideIf("infiniteShake")]
+    //[HideIf("infiniteShake")]
     [SerializeField] private float shakeDuration = 0.5f;
-    [HideIf("infiniteShake")]
+    //[HideIf("infiniteShake")]
     [SerializeField] private AnimationCurve shakeFalloff = AnimationCurve.EaseInOut(0, 1, 1, 0);
     
     [SerializeField] private float shakeMagnitude = 0.1f;
@@ -36,7 +36,7 @@ public class BasicShaker : MonoBehaviour
         }
     }
     
-    [Button("Start Shake")]
+    //[Button("Start Shake")]
     public void StartShake()
     {
         isShaking = true;

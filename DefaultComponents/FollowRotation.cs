@@ -1,4 +1,4 @@
-using Sirenix.OdinInspector;
+//using Sirenix.OdinInspector;
 using UnityEngine;
 
 public class FollowRotation : MonoBehaviour
@@ -15,7 +15,7 @@ public class FollowRotation : MonoBehaviour
         transform.rotation = target.rotation * Quaternion.Euler(offset);
     }
     
-    [Button]
+    //[Button]
     public void SetOffsetFromCurrentRotation()
     {
         offset = transform.rotation.eulerAngles - target.rotation.eulerAngles;

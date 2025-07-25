@@ -1,5 +1,5 @@
 using System;
-using Sirenix.OdinInspector;
+//using Sirenix.OdinInspector;
 using UnityEngine;
 
 public class LookAt : MonoBehaviour
@@ -7,10 +7,10 @@ public class LookAt : MonoBehaviour
     [SerializeField] private Transform target;
     [SerializeField] private Vector3 upAxis = Vector3.up;
     
-    [Title("Lock Axis")]
-    [SerializeField, LabelWidth(15), LabelText("X")] private bool lockX;
-    [SerializeField, LabelWidth(15), LabelText("Y")] private bool lockY;
-    [SerializeField, LabelWidth(15), LabelText("Z")] private bool lockZ;
+    [Header("Lock Axis")]
+    [SerializeField] private bool lockX;
+    [SerializeField] private bool lockY;
+    [SerializeField] private bool lockZ;
     
     public void SetTarget(Transform target)
     {

@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Sirenix.OdinInspector;
+// Sirenix.OdinInspector;
 using UnityEngine;
 
 public enum GridOrientation
@@ -13,9 +13,9 @@ public class GridArray : MonoBehaviour
     [SerializeField] private GridOrientation gridOrientation = GridOrientation.XZ;
     [SerializeField] private int columns = 1;
     [SerializeField] private bool autoSetSpacing = false;
-    [HideIf("autoSetSpacing")]
+    //[HideIf("autoSetSpacing")]
     [SerializeField] private float horizontalSpacing = 0.1f;
-    [HideIf("autoSetSpacing")]
+    //[HideIf("autoSetSpacing")]
     [SerializeField] private float verticalSpacing = 0.1f;
 
     private int rows;

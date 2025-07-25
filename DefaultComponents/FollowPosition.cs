@@ -1,16 +1,16 @@
-using Sirenix.OdinInspector;
+//using Sirenix.OdinInspector;
 using UnityEngine;
 
 public class FollowPosition : MonoBehaviour
 {
-    [OnValueChanged("SetPosition")]
+ //   [OnValueChanged("SetPosition")]
     [SerializeField] private Transform target;
     [SerializeField] private Vector3 offset;
 
     [SerializeField] private bool useLocal = false;
     [SerializeField] private bool isFollowing = true;
     
-    [Button]
+    //[Button]
     void SetOffsetFromCurrentPosition()
     {
         offset = transform.position - target.position;

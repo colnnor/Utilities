@@ -1,4 +1,4 @@
-﻿using Sirenix.OdinInspector;
+﻿//using Sirenix.OdinInspector;
 using UnityEngine;
 
 [ExecuteAlways]
@@ -6,11 +6,11 @@ public class CopyRotation : MonoBehaviour
 {
     [SerializeField] private bool local;
     [SerializeField] private bool uniform = true;
-    [HideIf("uniform")]
+    //[HideIf("uniform")]
     [SerializeField] private bool copyX = true;
-    [HideIf("uniform")]
+    //[HideIf("uniform")]
     [SerializeField] private bool copyY = true;
-    [HideIf("uniform")]
+    //[HideIf("uniform")]
     [SerializeField] private bool copyZ = true;
 
     [SerializeField] private Transform targetTransform;
