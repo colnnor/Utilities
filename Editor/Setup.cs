@@ -13,14 +13,20 @@ public static class Setup
 {
     #region Assets
 
-    [MenuItem("Tools/Setup/Assets/Import Essential Assets")]
+    [MenuItem("Tools/Setup/Assets/Import Essential Assets", priority = -240)]
     public static void ImportEssentials()
     {
-        Assets.ImportAsset("Odin Inspector and Serializer", "Sirenix/Editor ExtensionsSystem");
-        Assets.ImportAsset("Hot Reload Edit Code Without Compiling", "The Naughty Cult/Editor ExtensionsUtilities");
-        Assets.ImportAsset("DOTween HOTween v2.unitypackage", "Demigiant/Editor ExtensionsAnimation");
-        Assets.ImportAsset("Audio Preview Tool", "Warped Imagination/Editor ExtensionsAudio");
+        ImportOdinInspector();
+        ImportDOTween();
+        ImportHotReload();
+        ImportAudioPreviewTool();
+        ImportVInspector();
         // and so on...
+    }
+    [MenuItem("Tools/Setup/Assets/Import VInspector")]
+    public static void ImportVInspector()
+    {
+        Assets.ImportAsset("vInspector 2", "kubacho lab/Editor ExtensionsUtilities");
     }
 
     [MenuItem("Tools/Setup/Assets/Import Hot Reload")]

@@ -5,7 +5,6 @@ using UnityEngine;
 public class CopyRotation : MonoBehaviour
 {
     [SerializeField] private bool local;
-    [SerializeField] private bool uniform = true;
     //[HideIf("uniform")]
     [SerializeField] private bool copyX = true;
     //[HideIf("uniform")]
@@ -19,21 +18,22 @@ public class CopyRotation : MonoBehaviour
     {
         if (!targetTransform) return;
 
-        Vector3 targetRotation = local ? targetTransform.localEulerAngles : targetTransform.eulerAngles;
+        var targetRotation = targetTransform.rotation;
+        var currentRotation = local ? transform.localRotation : transform.rotation;
 
-        if (!uniform)
-        {
-            if (copyX) targetRotation.x = targetRotation.x;
-            if (copyY) targetRotation.y = targetRotation.y;
-            if (copyZ) targetRotation.z = targetRotation.z;
-        }
+        var newRotation = new Quaternion(
+            copyX ? targetRotation.x : currentRotation.x,
+            copyY ? targetRotation.y : currentRotation.y,
+            copyZ ? targetRotation.z : currentRotation.z,
+            currentRotation.w);
 
         if (local)
         {
-            transform.localRotation = Quaternion.Euler(targetRotation);
-            return;
+            transform.localRotation = newRotation;
         }
-
-        transform.rotation = Quaternion.Euler(targetRotation);
+        else
+        {
+            transform.rotation = newRotation;
+        }
     }
 }

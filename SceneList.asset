@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: SceneList
   m_EditorClassIdentifier: 
   favoriteScenes:
-  - Assets/_Project/Scenes/Legs.unity
+  - Assets/_Project/Projection/Scenes/ProjectionSetup.unity
   allScenes: []
