@@ -12,6 +12,6 @@ public class SimpleRotate : MonoBehaviour
     void Update()
     {
         rotationDelta = rotationAxis * (rotationSpeed * Time.deltaTime);
-        transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles + rotationDelta);
+        transform.Rotate(rotationDelta, Space.Self);
     }
 }
