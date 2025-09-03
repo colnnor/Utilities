@@ -45,7 +45,7 @@ public class SceneFavoritesOverlay : Overlay
         };
         searchField.RegisterValueChangedCallback(evt => { UpdateSceneList(evt.newValue); });
 
-        favoritesContainer = new ScrollView()
+        favoritesContainer = new VisualElement
         {
             style =
             {
@@ -53,23 +53,12 @@ public class SceneFavoritesOverlay : Overlay
                 alignItems = Align.FlexStart
             }
         };
-        var spacerBar = new VisualElement
-        {
-            style =
-            {
-                height = 1,
-                backgroundColor = new StyleColor(Color.gray),
-                marginTop = 5,
-                marginBottom = 5,
-                width = Length.Percent(100)
-            }
-        };
+
         var buttonContainer = new VisualElement
         {
             style =
             {
                 paddingTop = 10,
-                minHeight = 20,
                 flexDirection = FlexDirection.Row,
                 justifyContent = Justify.SpaceBetween
             }
@@ -87,7 +76,6 @@ public class SceneFavoritesOverlay : Overlay
 
         container.Add(searchField);
         container.Add(favoritesContainer);
-        container.Add(spacerBar);
         container.Add(scrollView);
         container.Add(buttonContainer);
 
@@ -174,6 +162,21 @@ public class SceneFavoritesOverlay : Overlay
             {
                 scrollView.Add(sceneElement);
             }
+        }
+
+        if (sceneList.favoriteScenes.Count > 0)
+        {
+            var separator = new VisualElement
+            {
+                style =
+                {
+                    height = 1,
+                    backgroundColor = new StyleColor(Color.gray),
+                    marginTop = 5,
+                    marginBottom = 5
+                }
+            };
+            favoritesContainer.Add(separator);
         }
 
         // Adjust scroll view height dynamically based on the number of scenes

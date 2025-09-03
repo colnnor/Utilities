@@ -179,16 +179,7 @@ public static class Extensions
         foreach (Transform child in parent)
             yield return child;
     }
-    public static bool TryGetChild(this Transform transform, int index, out Transform child)
-    {
-        if(index >= 0 && index < transform.childCount)
-        {
-            child = transform.GetChild(index);
-            return true;
-        }
-        child = null;
-        return false;
-    }
+    
     public static void ResetLocal(this Transform transform, bool position = true, bool rotation = true, bool scale = true)
     {
         if (position) transform.localPosition = Vector3.zero;
@@ -222,7 +213,6 @@ public static class Extensions
     }
     public static void Destroy(this Transform transform)
     {
-        if(transform == null) return;
         if(Application.isPlaying)
             Object.Destroy(transform.gameObject);
         else
