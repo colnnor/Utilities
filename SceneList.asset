@@ -13,8 +13,6 @@ MonoBehaviour:
   m_Name: SceneList
   m_EditorClassIdentifier: 
   favoriteScenes:
-  - Assets/_Project/Scenes/SampleScene.unity
-  - Assets/_Project/Scenes/VITALProjection.unity
-  - Assets/_Project/Scenes/ProjectionCameraTesting.unity
-  - Assets/_Project/Scenes/CameraAreaTest.unity
+  - Assets/_Project/Scenes/Setup.unity
+  - Assets/_Project/Scenes/PuzzleGame.unity
   allScenes: []
