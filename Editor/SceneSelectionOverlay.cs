@@ -17,6 +17,7 @@ public class SceneFavoritesOverlay : Overlay
     private ScrollView scrollView;
     private VisualElement favoritesContainer;
     private VisualElement container;
+    
 
     public override VisualElement CreatePanelContent()
     {
