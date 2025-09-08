@@ -46,24 +46,53 @@ public class TransformExtendedEditor : Editor
         GUILayout.Label(icon, GUILayout.Width(20f), GUILayout.Height(20f));
         if (icon != null)
         {
-            if (GUILayout.Button("Recenter Parent", GUILayout.Width(150f)))
+            if (GUILayout.Button(new GUIContent("Recenter Parent", "Moves the parent to the child's position and resets the child's local position and rotation"), GUILayout.Width(150f)))
             {
-                RecenterParent(transform, parent);
+                int undoGroupIndex = Undo.GetCurrentGroup();
+                Undo.SetCurrentGroupName("Recenter Parent");
+                Undo.RecordObject(transform, "Recenter Child");
+                Undo.RecordObject(parent, "Recenter Parent");
+                
+                Vector3 originalPosition = transform.position;
+                Quaternion originalRotation = transform.rotation;
+
+                parent.position = originalPosition;
+                parent.rotation = originalRotation;
+
+                transform.localPosition = Vector3.zero;
+                transform.localRotation = Quaternion.identity;
+                
+                Undo.CollapseUndoOperations(undoGroupIndex);
             }
         }
 
+        GUIContent resizeIcon = EditorGUIUtility.IconContent("TreeEditor.Refresh");
+        GUILayout.Label(resizeIcon, GUILayout.Width(20f), GUILayout.Height(20f));
+        if (resizeIcon != null)
+        {
+            //tooptip
+            
+            if (GUILayout.Button(new GUIContent("Reset Parent Size", "Resets the parent's scale to (1,1,1) while maintaining the child's world size"), GUILayout.Width(150f)))
+            {
+                int undoGroupIndex = Undo.GetCurrentGroup();
+                Undo.SetCurrentGroupName("Reset Parent Size");
+                Undo.RecordObject(transform, "Reset Child Size");
+                Undo.RecordObject(parent, "Reset Parent Size");
+                
+                Vector3 originalPosition = transform.position;
+                Quaternion originalRotation = transform.rotation;
+                Vector3 originalScale = parent.localScale;
+                
+                
+                parent.localScale = Vector3.one;
+                
+                transform.position = originalPosition;
+                transform.rotation = originalRotation;
+                transform.localScale = originalScale;
+                
+                Undo.CollapseUndoOperations(undoGroupIndex);
+            }
+        }
         EditorGUILayout.EndHorizontal();
-    }
-
-    private static void RecenterParent(Transform transform, Transform parent)
-    {
-        Vector3 originalPosition = transform.position;
-        Quaternion originalRotation = transform.rotation;
-
-        parent.position = originalPosition;
-        parent.rotation = originalRotation;
-
-        transform.localPosition = Vector3.zero;
-        transform.localRotation = Quaternion.identity;
     }
 }
