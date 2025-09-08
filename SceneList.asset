@@ -15,4 +15,6 @@ MonoBehaviour:
   favoriteScenes:
   - Assets/_Project/Scenes/Setup.unity
   - Assets/_Project/Scenes/PuzzleGame.unity
+  - Assets/MystifyFX/Demo/Demo.unity
+  - Assets/_Project/Scenes/MainMenu.unity
   allScenes: []

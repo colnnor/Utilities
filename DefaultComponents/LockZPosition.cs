@@ -6,7 +6,6 @@ using UnityEngine;
 [SelectionBase]
 public class LockZPosition : MonoBehaviour
 {
-    private bool locking;
     [ContextMenu("Set Editable")]
     private void SetEditable()
     {
@@ -25,7 +24,6 @@ public class LockZPosition : MonoBehaviour
 
     private void SetPosition()
     {
-        locking = true;
         transform.position = transform.position.With(z: 0);
     }
 }
