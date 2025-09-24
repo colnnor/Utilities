@@ -4,7 +4,7 @@ using UnityEngine;
 
 public static class SceneListManager
 {
-    private static readonly string assetPath = "Assets/_Project/Utilities/SceneList.asset";
+    private static readonly string assetPath = "Assets/Resources/SceneList/SceneList.asset";
 
     public static SceneList GetOrCreateSceneList()
     {
