@@ -57,7 +57,8 @@ public static class Setup
 
     #region Packages
 
-    [MenuItem("Tools/Setup/Packages/Install Essential Packages")] [Tooltip("Adds 2D Animation, Improved Timers, Cinemachine, and Input System")]
+    [Tooltip("Adds 2D Animation, Improved Timers, Cinemachine, and Input System")]
+    [MenuItem("Tools/Setup/Packages/Install Essential Packages", priority = -240)]
     public static void InstallPackages()
     {
         Packages.InstallPackages(new[]
@@ -110,7 +111,7 @@ public static class Setup
 
     #endregion
 
-    [MenuItem("Tools/Setup/Create Folders")]
+    [MenuItem("Tools/Setup/Create Folders", priority = -1900)]
     public static void CreateFolders()
     {
         Folders.Create("_Project", "Animation", "Art", "Input", "Materials", "Prefabs", "Scripts", "Audio", "Audio/Music", "Audio/SFX", "Models");

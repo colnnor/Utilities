@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
+#if ODIN_INSPECTOR
 using Sirenix.OdinInspector;
+#endif
 using UnityEngine;
 
 public class RadialArray : MonoBehaviour
@@ -55,7 +58,10 @@ public class RadialArray : MonoBehaviour
         }
     }
 
+    
+#if ODIN_INSPECTOR
     [Button]
+#endif
     void RepopulateChildren()
     {
         int tempCount = count;

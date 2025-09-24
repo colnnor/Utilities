@@ -1,11 +1,29 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Random = System.Random;
 
 public static class Extensions
 {
+    #region Generic Extensions
+    
+    /// <summary>
+    /// Return <c>null</c> when this <paramref name="unityObject"/> reference is <c>null</c> or destroyed, otherwise return the <paramref name="unityObject"/> instance
+    /// Allow using null conditional and null coalescing operators with <c>UnityEngine.Object</c> derivatives while conforming to the "a destroyed object is equal to null" Unity concept.
+    /// Example :
+    /// <c>float x = myUnityObject.DestroyedAsNull()?.myFloatField ?? 0f;</c>
+    /// will evaluate to <c>0f</c> when <c>myUnityObject</c> is destroyed, instead of returning the value still available on the managed instance.
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static T DestroyedAsNull<T>(this T unityObject) where T : Object
+    {
+        return unityObject ? unityObject : null;
+    }
+   
+
+    #endregion
     #region Vector3 Extensions
     /// <summary>
     /// Returns a new Vector3 with the specified values, or the original values if not specified
@@ -270,7 +288,8 @@ public static class Extensions
     {
         parent.PerformActionOnChildren(child => child.gameObject.SetActive(true));
     }
-
+    public static bool InRangeOf(this Transform transform, Vector3 pos, float range) => transform.position.InRangeOf(pos, range);
+    public static bool InRangeOf(this Vector3 posA, Vector3 posB, float range) => Vector3.Distance(posA, posB) <= range;
     private static void PerformActionOnChildren(this Transform parent, System.Action<Transform> action)
     {
         for (int i = parent.childCount - 1; i >= 0; i--)

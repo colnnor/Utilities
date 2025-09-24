@@ -12,12 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7915df4cd4da490ab52fc8fa9ee9127, type: 3}
   m_Name: vInspector Data
   m_EditorClassIdentifier: 
-  bookmarks:
-  - _obj: {fileID: -5475051401550479605, guid: ce86f1933e2135541b2e16d838cfc2fe, type: 3}
-    globalId:
-      globalObjectIdString: GlobalObjectId_V1-1-ce86f1933e2135541b2e16d838cfc2fe-12971692672159072011-0
-    isSceneGameObject: 0
-    isAsset: 1
-    _typeString: Unity.Services.CloudCode.Authoring.Editor.Modules.CloudCodeModuleReference,
-      Unity.Services.CloudCode.Authoring.Editor, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
+  bookmarks: []
