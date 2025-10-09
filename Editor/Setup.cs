@@ -178,7 +178,7 @@ public static class Setup
         }
     }
 
-    [MenuItem("Assets/Create/Create Base Folders", false, -235)]
+    [MenuItem("Assets/Create/Create Base Folders %#&b", false, -235)]
     public static void CreateBaseFolders()
     {
         var selectedFolderPath = Selection.activeObject ? GetAssetPath(Selection.activeObject) : string.Empty;

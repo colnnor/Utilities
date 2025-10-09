@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine.EventSystems;
 using TMPro;
 using Unity.VisualScripting;
+using UnityEngine.InputSystem;
 
 public static class Helpers
 {
@@ -97,5 +98,17 @@ public static class Helpers
     public static int GetRandomCeil(float min, float max)
     {
         return Mathf.RoundToInt(Random.Range(min, max));
+    }
+    
+    public static Vector3 GetMouseWorldPosition(LayerMask? layerMask = null)
+    {
+        LayerMask mask = layerMask ?? Physics.DefaultRaycastLayers;
+        
+        Ray ray = Camera.ScreenPointToRay(Mouse.current.position.ReadValue());
+        if (Physics.Raycast(ray, out RaycastHit hit, 1000f, mask))
+        {
+            return hit.point;
+        }
+        return Vector3.zero;
     }
 }
