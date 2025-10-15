@@ -58,7 +58,7 @@ public struct SerializableGuid : IEquatable<SerializableGuid> {
 
     public static implicit operator Guid(SerializableGuid serializableGuid) => serializableGuid.ToGuid();  
     public static implicit operator SerializableGuid(Guid guid) => new SerializableGuid(guid);
-
+    
     public override bool Equals(object obj) {
         return obj is SerializableGuid guid && this.Equals(guid);
     }

@@ -1,12 +1,60 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Random = System.Random;
 
 public static class Extensions
 {
+    #region Collider Extensions
+
+    static readonly Collider[] overlapCache = new Collider[32];
+    public static bool GetPenetrationsInLayer(this Collider source, LayerMask layerMask, out Vector3 totalCorrection)
+    {
+        totalCorrection = Vector3.zero;
+        if (!source) return false;
+
+        int count = Physics.OverlapBoxNonAlloc(
+            source.bounds.center,
+            source.bounds.extents,
+            overlapCache,
+            source.transform.rotation,
+            layerMask
+        );
+        bool collided = false;
+        for (int i = 0; i < count; i++)
+        {
+            Collider other = overlapCache[i];
+            if (other == source) continue;
+            
+            if(source.ComputePenetration(other, out var dir, out var dist))
+            {
+                collided = true;
+                totalCorrection += dir * dist;
+            }
+        }
+        
+        return collided;
+    }
+    public static bool ComputePenetration(this Collider source, Collider target, out Vector3 direction, out float distance)
+    {
+        direction = Vector3.zero;
+        distance = 0f;
+        
+        if (!source || !target) return false;
+
+        return Physics.ComputePenetration(
+            source, source.transform.position, source.transform.rotation,
+            target, target.transform.position, target.transform.rotation,
+            out direction, out distance
+        );
+    }
+
+    
+
+    #endregion
     #region Generic Extensions
     
     /// <summary>
@@ -78,7 +126,15 @@ public static class Extensions
 
     public static Vector3 RotationTowards(this Vector3 vector, Vector3 target) => vector - target;
     
-    public static Vector3 Clamp(this Vector3 vector, Vector3 min, Vector3 max) => new Vector3(vector.x.Clamp(min.x, max.x), vector.y.Clamp(min.y, max.y), vector.z.Clamp(min.z, max.z));
+    public static Vector3 Clamp(this Vector3 vector, Vector3 min, Vector3 max)
+    {
+        var pos = vector;
+        pos.x = Mathf.Clamp(pos.x, Mathf.Min(min.x, max.x), Mathf.Max(min.x, max.x));
+        pos.y = Mathf.Clamp(pos.y, Mathf.Min(min.y, max.y), Mathf.Max(min.y, max.y));
+        pos.z = Mathf.Clamp(pos.z, Mathf.Min(min.z, max.z), Mathf.Max(min.z, max.z));
+        return pos;
+    }
+
     public static Vector3 ClampFloat(this Vector3 vector, float min, float max) => new Vector3(vector.x.Clamp(min, max), vector.y.Clamp(min, max), vector.z.Clamp(min, max));
     
     #endregion
@@ -188,6 +244,22 @@ public static class Extensions
     }
     #endregion
 
+    #region EditorExtensions
+
+    public static MonoBehaviour GetOwningMonoBehaviour(this SerializedProperty property)
+    {
+        if (property == null) return null;
+
+        // Get the serialized object
+        var serializedObject = property.serializedObject;
+        if (serializedObject == null) return null;
+
+        // Get the target object (the MonoBehaviour)
+        return serializedObject.targetObject as MonoBehaviour;
+    }
+    
+
+    #endregion
     #region Transform Extensions
     /// <summary>
     /// Returns an enumerable collection of the children of the Transform.

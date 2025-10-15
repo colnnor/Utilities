@@ -12,6 +12,10 @@ public class TransformExtendedEditor : Editor
 {
     private Editor internalEditor;
 
+    readonly Color darkSkinHeaderColor = new Color32(62, 62, 62, 255);
+    readonly Color lightSkinHeaderColor = new Color32(194, 194, 194, 255);
+    private static bool transformToolsEnabled = true;
+    
     public bool TransformToolsEnabled
     {
         get => transformToolsEnabled;
@@ -33,9 +37,6 @@ public class TransformExtendedEditor : Editor
         if (internalEditor) DestroyImmediate(internalEditor);
     }
     
-    Color darkSkinHeaderColor = (Color)new Color32(62, 62, 62, 255);
-    Color lightSkinHeaderColor = (Color)new Color32(194, 194, 194, 255);
-    [SerializeField] private static bool transformToolsEnabled = true;
 
     protected override void OnHeaderGUI()
     {

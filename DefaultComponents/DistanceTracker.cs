@@ -24,15 +24,20 @@ public class DistanceTracker : MonoBehaviour
 
     private void Update()
     {
-        if(!targetOne || !targetTwo || !distanceText || !lineRenderer)
+        if(!targetOne || !targetTwo)
             return;
         
         float distance = Vector3.Distance(targetOne.position, targetTwo.position);
-        distanceText.text = distance.ToString("F2") + "m";
-        lineRenderer.SetPosition(0, targetOne.position);
-        lineRenderer.SetPosition(1, targetTwo.position);
+
+        if (lineRenderer)
+        {
+            lineRenderer.SetPosition(0, targetOne.position);
+            lineRenderer.SetPosition(1, targetTwo.position);
+        }
         
+        if(!distanceText) return;
         Vector3 centerPoint = (targetOne.position + targetTwo.position) / 2;
+        distanceText.text = distance.ToString("F2") + "m";
         distanceText.transform.position = centerPoint;
     }
 }
