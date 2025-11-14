@@ -5,7 +5,6 @@ using System.Reflection;
 using Codice.Client.BaseCommands.Import;
 using UnityEditor;
 using UnityEngine;
-using VInspector.Libs;
 
 [CustomEditor(typeof(Transform))]
 public class TransformExtendedEditor : Editor
