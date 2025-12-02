@@ -76,6 +76,7 @@ public static class Extensions
     /// <summary>
     /// Returns a new Vector3 with the specified values, or the original values if not specified
     /// </summary>
+    public static Vector3 ToVector3(this Vector2 vector, float y = 0f) => new (vector.x, y, vector.y);
     public static Vector3 With(this Vector3 vector, float? x = null, float? y = null, float? z = null) => new (x ?? vector.x, y ?? vector.y, z ?? vector.z);
     public static Vector3Int With(this Vector3Int vector, float? x = null, float? y = null, float? z = null) => new ((int)(x ?? vector.x), (int)(y ?? vector.y), (int)(z ?? vector.z));
     public static Vector3 WithOffset(this Vector3 vector, Vector3 offset) => new (vector.x + offset.x, vector.y + offset.y, vector.z + offset.z);
@@ -83,6 +84,14 @@ public static class Extensions
     public static Vector3 RightFromUpDirection(this Vector3 up, Vector3 forward)
     {
         return Vector3.Cross(up, forward).normalized;
+    }
+    public static Vector3 Quantize(this Vector3 vector, Vector3 quantization)
+    {
+        return Vector3.Scale(quantization, new Vector3(
+            Mathf.Floor(vector.x / quantization.x),
+            Mathf.Floor(vector.y / quantization.y),
+            Mathf.Floor(vector.z / quantization.z)
+        ));
     }
     public static bool IsHorizontal(this Vector3 vector)
     {
