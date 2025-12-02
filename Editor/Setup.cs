@@ -118,6 +118,7 @@ public static class Setup
         Refresh();
         Folders.Move("_Project", "Scenes");
         Folders.Move("_Project", "Settings");
+        Folders.Move("_Project", "InputSystem_Actions");
         Folders.Delete("TutorialInfo");
         Refresh();
 
@@ -226,6 +227,9 @@ public static class Setup
             }
         }
 
+        /// <summary>
+        /// Moves a folder under Assets to a new parent folder.
+        /// </summary>
         public static void Move(string newParent, string folderName)
         {
             var sourcePath = $"Assets/{folderName}";
