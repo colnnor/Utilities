@@ -10,6 +10,8 @@ public class KeyDownEvents : MonoBehaviour
     private void Update()
     {
         if(Inputs.GetKeyDown(eventKey))
+        {
             onKeyDownEvent.Invoke();
+        }
     }
 }
