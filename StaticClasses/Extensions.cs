@@ -221,6 +221,13 @@ public static class Extensions
         gameObject.AddComponent<T>();
         return true;
     }
+    
+    public static bool TryGetComponentOrInChildren<T>(this GameObject gameObject, out T component) where T : Component
+    {
+        if (!gameObject.TryGetComponent(out component))
+            component = gameObject.GetComponentInChildren<T>();
+        return component != null;
+    }
 
     /// <summary>
     /// Returns null if the object is null, otherwise returns the object itself.

@@ -60,11 +60,9 @@ public class TriggerEvents : MonoBehaviour
         if (!enabled) return;
 
         if (colliders.Contains(other)) return; // Prevent duplicate entries
-        Debug.Log($"Allowed Objects Count: {allowedObjects.Count}, Use Allowed Objects: {useAllowedObjects}");
         if(!allowedObjects.Contains(other.gameObject) && useAllowedObjects) return;
         colliders.Add(other);
 
-        Debug.Log($"Current Frame: {Time.frameCount}, OnTriggerEnter with {other.name} on {gameObject.name}");
         onTriggerEnter?.Invoke(other);
         triggerEnterEvent.Invoke();
     }

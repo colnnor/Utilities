@@ -21,24 +21,21 @@ public class SimpleMovement : MonoBehaviour
 
     void Update()
     {
-        float horizontalInput = Keyboard.current.aKey.isPressed ? -1f : Keyboard.current.dKey.isPressed ? 1f : 0f;
-        float verticalInput = Keyboard.current.wKey.isPressed ? 1f : Keyboard.current.sKey.isPressed ? -1f : 0f;
+        float horizontal = Inputs.GetAxis("Horizontal");
+        float vertical = Inputs.GetAxis("Vertical");
         
-        Vector3 horiz = Axis.GetAxis(horizontalAxis) * horizontalInput;
-        Vector3 vert = Axis.GetAxis(verticalAxis) * verticalInput;
-
-        movementDelta = (horiz + vert).normalized;
-        
-        if (movementDelta.magnitude > 0)
+        Vector3 targetDelta = Axis.GetAxis(horizontalAxis) * horizontal + Axis.GetAxis(verticalAxis) * vertical;
+        movementDelta = Vector3.Lerp(movementDelta, targetDelta, Time.deltaTime * speedRamp);
+        currentSpeed = Mathf.Lerp(currentSpeed, speed, Time.deltaTime * speedRamp);
+        transform.position += movementDelta * (currentSpeed * Time.deltaTime);
+    
+        //rotate towards movement direction
+        if (movementDelta.sqrMagnitude > 0.001f)
         {
-            transform.position += transform.forward * (currentSpeed * Time.deltaTime);
-        }
-        
-        float rotationY = Keyboard.current.leftArrowKey.isPressed ? -1f : Keyboard.current.rightArrowKey.isPressed ? 1f : 0f;
-        if (rotationY != 0)
-        {
-            transform.Rotate(Vector3.up, rotationY * speed * 50 * Time.deltaTime);
+            Quaternion targetRotation = Quaternion.LookRotation(movementDelta.normalized, Vector3.up);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * speedRamp);
         }
     }
+    
     
 }
