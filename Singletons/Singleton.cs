@@ -19,6 +19,7 @@ public class Singleton<T> : MonoBehaviour where T : Component
                 if(!instance)
                 {
                     var go = new GameObject(typeof(T).Name + " Auto-Generated");
+                    Debug.LogWarning($"No instance of {typeof(T).Name} found in the scene. An instance has been auto-generated.", go);
                     instance = go.AddComponent<T>();
                 }
             }

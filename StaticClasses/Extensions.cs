@@ -55,6 +55,7 @@ public static class Extensions
     
 
     #endregion
+    
     #region Generic Extensions
     
     /// <summary>
@@ -72,6 +73,7 @@ public static class Extensions
    
 
     #endregion
+    
     #region Vector3 Extensions
     /// <summary>
     /// Returns a new Vector3 with the specified values, or the original values if not specified
@@ -206,6 +208,12 @@ public static class Extensions
             component = gameObject.GetComponentInChildren<T>();
         return component;
     }
+    public static T GetComponentInHierarchy<T>(this GameObject gameObject) where T : Component
+    {
+        var root = gameObject.transform.root;
+        T component = root.GetComponentOrInChildren<T>();
+        return component;
+    }
     public static bool TryAddComponent<T>(this GameObject gameObject) where T : Component
     {
         if (!gameObject.GetComponent<T>()) return false;
@@ -269,6 +277,7 @@ public static class Extensions
     
 
     #endregion
+    
     #region Transform Extensions
     /// <summary>
     /// Returns an enumerable collection of the children of the Transform.
@@ -388,14 +397,14 @@ public static class Extensions
     public static float Abs(this float value)
     {
         return Mathf.Abs(value);
-    }
+    }/*
     public static float Remap(this float value, float fromMin, float fromMax, float toMin, float toMax)
     {
         if (toMax > toMin)
             return toMin + (value - fromMin) * (toMax - toMin) / (fromMax - fromMin);
             
         return toMax + (fromMax - value) * (toMin - toMax) / (fromMax - fromMin);
-    }
+    }*/
 
     public static float Squared(this float value) => value * value;
 
@@ -478,8 +487,20 @@ public static class Extensions
 
     #endregion
 
+    #region Layer Extensions
+
+    public static bool IsInLayerMask(this GameObject obj, LayerMask layerMask)
+    {
+        return (layerMask.value & (1 << obj.layer)) > 0;
+    }
+
+    #endregion
     #region List Extensions
     
+    public static bool IsEmpty<T>(this List<T> list)
+    {
+        return list == null || list.Count == 0;
+    }
     public static bool TryGet<T>(this List<T> list, T input, out T result)
     {
         if(list.Contains(input))
