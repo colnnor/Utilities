@@ -1,5 +1,3 @@
-
-
 using System;
 //using Sirenix.OdinInspector;
 using UnityEngine;
@@ -12,14 +10,14 @@ public class BasicShaker : MonoBehaviour
     [SerializeField] private float shakeDuration = 0.5f;
     //[HideIf("infiniteShake")]
     [SerializeField] private AnimationCurve shakeFalloff = AnimationCurve.EaseInOut(0, 1, 1, 0);
-    
+
     [SerializeField] private float shakeMagnitude = 0.1f;
     [SerializeField] private float shakeFrequency = 20f;
-    
+
     private Vector3 originalPosition;
     private float shakeTime;
     private bool isShaking;
-    
+
     private void Awake()
     {
         originalPosition = transform.localPosition;
@@ -27,7 +25,6 @@ public class BasicShaker : MonoBehaviour
 
     private void Start()
     {
-        
     }
 
     private void Update()
@@ -37,28 +34,28 @@ public class BasicShaker : MonoBehaviour
             Shake();
         }
     }
-    
+
     //[Button("Start Shake")]
     public void StartShake()
     {
         isShaking = true;
         shakeTime = 0f;
     }
-    
+
     public void StopShake()
     {
         isShaking = false;
         transform.localPosition = originalPosition;
     }
-    
+
     private void Shake()
     {
-        if(infiniteShake)
+        if (infiniteShake)
         {
             Vector3 offset = Random.insideUnitSphere * shakeMagnitude;
             transform.localPosition = originalPosition + offset;
         }
-        else if(shakeTime < shakeDuration)
+        else if (shakeTime < shakeDuration)
         {
             shakeTime += Time.deltaTime;
             float t = shakeTime / shakeDuration;
@@ -71,5 +68,4 @@ public class BasicShaker : MonoBehaviour
             StopShake();
         }
     }
-    
 }

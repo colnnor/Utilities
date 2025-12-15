@@ -119,6 +119,7 @@ public static class Setup
         Folders.Move("_Project", "Scenes");
         Folders.Move("_Project", "Settings");
         Folders.Move("_Project", "InputSystem_Actions");
+        Folders.Move("_Project", "Utilities");
         Folders.Delete("TutorialInfo");
         Refresh();
 

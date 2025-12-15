@@ -10,7 +10,7 @@ public class OpenFolderTool
         Event e = Event.current;
         if (e is { shift: false }) return false;
         
-        var obj = EditorUtility.InstanceIDToObject(instanceID);
+        var obj = EditorUtility.EntityIdToObject(instanceID);
         string path = AssetDatabase.GetAssetPath(obj);
         
         if(AssetDatabase.IsValidFolder(path))
