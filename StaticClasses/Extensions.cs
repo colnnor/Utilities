@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using UnityEditor;
@@ -56,6 +56,8 @@ public static class Extensions
 
     #endregion
 
+    #endregion
+    
     #region Generic Extensions
 
     /// <summary>
@@ -72,7 +74,7 @@ public static class Extensions
     }
 
     #endregion
-
+    
     #region Vector3 Extensions
 
     /// <summary>
@@ -223,20 +225,25 @@ public static class Extensions
             component = gameObject.GetComponentInChildren<T>();
         return component;
     }
-
     public static T GetComponentInHierarchy<T>(this GameObject gameObject) where T : Component
     {
         var root = gameObject.transform.root;
         T component = root.GetComponentOrInChildren<T>();
         return component;
     }
-
     public static bool TryAddComponent<T>(this GameObject gameObject) where T : Component
     {
         if (!gameObject.GetComponent<T>()) return false;
 
         gameObject.AddComponent<T>();
         return true;
+    }
+    
+    public static bool TryGetComponentOrInChildren<T>(this GameObject gameObject, out T component) where T : Component
+    {
+        if (!gameObject.TryGetComponent(out component))
+            component = gameObject.GetComponentInChildren<T>();
+        return component != null;
     }
 
     public static bool TryGetComponentOrInChildren<T>(this GameObject gameObject, out T component) where T : Component
@@ -301,7 +308,7 @@ public static class Extensions
     }
 
     #endregion
-
+    
     #region Transform Extensions
 
     /// <summary>
@@ -432,7 +439,7 @@ public static class Extensions
     public static float Abs(this float value)
     {
         return Mathf.Abs(value);
-    } /*
+    }/*
     public static float Remap(this float value, float fromMin, float fromMax, float toMin, float toMax)
     {
         if (toMax > toMin)
@@ -535,14 +542,12 @@ public static class Extensions
     }
 
     #endregion
-
     #region List Extensions
-
+    
     public static bool IsEmpty<T>(this List<T> list)
     {
         return list == null || list.Count == 0;
     }
-
     public static bool TryGet<T>(this List<T> list, T input, out T result)
     {
         if (list.Contains(input))
