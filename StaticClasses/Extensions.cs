@@ -56,7 +56,6 @@ public static class Extensions
 
     #endregion
 
-    #endregion
     
     #region Generic Extensions
 
@@ -239,13 +238,6 @@ public static class Extensions
         return true;
     }
     
-    public static bool TryGetComponentOrInChildren<T>(this GameObject gameObject, out T component) where T : Component
-    {
-        if (!gameObject.TryGetComponent(out component))
-            component = gameObject.GetComponentInChildren<T>();
-        return component != null;
-    }
-
     public static bool TryGetComponentOrInChildren<T>(this GameObject gameObject, out T component) where T : Component
     {
         if (!gameObject.TryGetComponent(out component))
