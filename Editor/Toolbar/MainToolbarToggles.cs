@@ -7,25 +7,18 @@ public class MainToolbarToggles
     [MainToolbarElement("EditorSettings/Toggle Domain Reload", defaultDockPosition = MainToolbarDockPosition.Middle)]
     public static MainToolbarElement ToggleDomainReload()
     {
-        var enabled = EditorSettings.enterPlayModeOptionsEnabled &&
-                      (EditorSettings.enterPlayModeOptions &
-                       (EnterPlayModeOptions.DisableDomainReload | EnterPlayModeOptions.DisableSceneReload)) == 0;
-        
-        var icon = enabled
-            ? EditorGUIUtility.IconContent("icons/d_preaudioautoplayoff.png").image as Texture2D
-            : EditorGUIUtility.IconContent("d_PlayButton").image as Texture2D;
-        
-        var content = new MainToolbarContent("Domain Reload", icon,  enabled ? "Domain Reload Enabled" : "Domain Reload Disabled");
-        var button = new MainToolbarToggle(content, !enabled, ToggleDomainReload);
-        return button;
+        bool enabled = (EditorSettings.enterPlayModeOptions & (EnterPlayModeOptions.DisableDomainReload | EnterPlayModeOptions.DisableSceneReload)) == 0;
+        var enabledIcon = EditorGUIUtility.IconContent("icons/d_preaudioautoplayoff@2x.png").image as Texture2D;
+        var disabledIcon = EditorGUIUtility.IconContent("icons/animationvisibilitytoggleoff.png").image as Texture2D;
+        var icon = enabled ? enabledIcon : disabledIcon;
+
+        var content = new MainToolbarContent($"Reload {(enabled ? "Enabled" : "Disabled")}", icon, $"Toggle domain and scene reload on/off for faster Play Mode entry.\nCurrently {(enabled ? "Enabled" : "Disabled")}");
+        return new MainToolbarToggle(content, enabled, ToggleDomainReload);
     }
 
     private static void ToggleDomainReload(bool e)
     {
         var options = EditorSettings.enterPlayModeOptions;
-        //If toggling on, remove the DisableDomainReload and DisableSceneReload flags 
-        //1 = DisableDomainReload
-        //2 = DisableSceneReload
         if (e)
         {
             Debug.Log("Enabling Domain Reload and Scene Reload.");
@@ -36,6 +29,7 @@ public class MainToolbarToggles
             Debug.Log("Disabling Domain Reload and Scene Reload for faster Play Mode entry.");
             options |= EnterPlayModeOptions.DisableDomainReload | EnterPlayModeOptions.DisableSceneReload;
         }
+
         EditorSettings.enterPlayModeOptions = options;
         MainToolbar.Refresh("EditorSettings/Toggle Domain Reload");
     }
