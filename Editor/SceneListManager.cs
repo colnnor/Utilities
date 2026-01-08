@@ -9,7 +9,7 @@ public static class SceneListManager
     public static SceneList GetOrCreateSceneList()
     {
         string directoryPath = Path.GetDirectoryName(assetPath);
-        if (!Directory.Exists(directoryPath))
+        if (!Directory.Exists(directoryPath) && directoryPath != null)
         {
             Directory.CreateDirectory(directoryPath);
         }
@@ -21,6 +21,7 @@ public static class SceneListManager
             AssetDatabase.CreateAsset(sceneList, assetPath);
             AssetDatabase.SaveAssets();
         }
+        
         return sceneList;
     }
 }

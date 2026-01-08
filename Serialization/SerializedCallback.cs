@@ -30,7 +30,7 @@ public class SerializedCallback<TReturn> : ISerializationCallbackReceiver {
     }
 
     object[] ConvertParameters(AnyValue[] args) {
-        if (args == null || args.Length == 0) return Array.Empty<object>();
+        if (args == null || args.Length == 0) return System.Array.Empty<object>();
         
         var convertedParams = new object[args.Length];
         for (int i = 0; i < args.Length; i++) {

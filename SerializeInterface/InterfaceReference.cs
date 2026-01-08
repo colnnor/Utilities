@@ -3,7 +3,7 @@ using UnityEngine;
 using Object = UnityEngine.Object;
 
 [Serializable]
-public class InterfaceReference<TInterface, TObject> where TObject : Object where TInterface : class {
+public class  InterfaceReference<TInterface, TObject> where TObject : Object where TInterface : class {
     [SerializeField, HideInInspector] TObject underlyingValue;
 
     public TInterface Value {

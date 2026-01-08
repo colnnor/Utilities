@@ -19,15 +19,20 @@ public class LookAt : MonoBehaviour
     }
     private void Update()
     {
-        if (target == null) return;
+        if (!target) return;
+        
         Vector3 lookAtPosition = target.position;
         Vector3 direction = lookAtPosition - transform.position;
+        
         if (invertDirection) direction = -direction;
+        
         Quaternion targetRotation = Quaternion.LookRotation(direction, localUp ? transform.up : upAxis);
         Vector3 euler = targetRotation.eulerAngles;
+        
         if (lockX) euler.x = transform.eulerAngles.x;
         if (lockY) euler.y = transform.eulerAngles.y;
         if (lockZ) euler.z = transform.eulerAngles.z;
+        
         transform.rotation = Quaternion.Euler(euler);
     }
 }
