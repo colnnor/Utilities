@@ -14,7 +14,7 @@ public static class Setup
     #region Assets
 
     [MenuItem("Tools/Setup/Assets/Import Essential Assets", priority = -240)]
-    public static void ImportEssentials()
+    public static void EssentialAssets()
     {
         ImportOdinInspector();
         ImportDOTween();
@@ -59,7 +59,7 @@ public static class Setup
 
     [Tooltip("Adds 2D Animation, Improved Timers, Cinemachine, and Input System")]
     [MenuItem("Tools/Setup/Packages/Install Essential Packages", priority = -240)]
-    public static void InstallPackages()
+    public static void EssentialPackages()
     {
         Packages.InstallPackages(new[]
         {
@@ -97,16 +97,16 @@ public static class Setup
     {
         Packages.InstallPackages("git+https://github.com/adammyhre/Unity-Improved-Timers.git");
     }
-    [MenuItem("Tools/Setup/Packages/Install Favorites Asset")]
-    public static void InstallFavorites()
-    {
-        Packages.InstallPackages("git+https://github.com/MasyoLab/UnityTools-FavoritesAsset.git?path=Assets/MasyoLab/FavoritesAsset");
-    }
-    
     [MenuItem("Tools/Setup/Packages/Install Cinemachine")]
     public static void InstallCinemachine()
     {
         Packages.InstallPackages("com.unity.cinemachine");
+    }
+
+    [MenuItem("Tools/Setup/Packages/Install Animation Rigging")]
+    public static void InstallAnimationRigging()
+    {
+        Packages.InstallPackages("com.unity.animation.rigging");
     }
 
     #endregion

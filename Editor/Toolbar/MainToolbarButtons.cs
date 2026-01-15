@@ -109,6 +109,17 @@ public class MainToolbarButtons
         return button;
     }
 
+    [MainToolbarElement("Assets/Import", defaultDockPosition = MainToolbarDockPosition.Middle)]
+    public static MainToolbarElement ImportAssetsButton()
+    {
+        var icon = EditorGUIUtility.IconContent("PackageManager").image as Texture2D;
+        var content = new MainToolbarContent(icon, "Import Assets");
+        var button = new MainToolbarButton(content, () =>
+        {
+            
+        });
+        return button;
+    }
     [MainToolbarElement("Timescale/Reset", defaultDockPosition = MainToolbarDockPosition.Middle)]
     public static MainToolbarElement ResetTimeScaleButton()
     {
