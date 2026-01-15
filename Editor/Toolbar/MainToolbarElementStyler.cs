@@ -22,6 +22,14 @@ public static class MainToolbarElementStyler {
         };
     }
 
+    public static void ZeroPadding(string elementName) {
+        StyleElement<VisualElement>(elementName, (element) => {
+            element.style.paddingLeft = 0;
+            element.style.paddingRight = 0;
+            element.style.paddingTop = 0;
+            element.style.paddingBottom = 0;
+        });
+    }
     static void ApplyStyle(string elementName, System.Action<VisualElement> styleCallback) {
         var element = FindElementByName(elementName);
         if (element != null) {

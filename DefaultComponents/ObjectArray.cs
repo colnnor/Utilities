@@ -5,7 +5,7 @@ using Sirenix.OdinInspector;
 #endif
 
 [ExecuteAlways]
-public class Array : MonoBehaviour
+public class ObjectArray : MonoBehaviour
 {
     public enum ArrayType
     {

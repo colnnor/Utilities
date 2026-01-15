@@ -170,6 +170,7 @@ public static class Extensions
 
     public static Vector2 With(this Vector2 vector, float? x = null, float? y = null) => new(x ?? vector.x, y ?? vector.y);
 
+    public static int GetRandomValue(this Vector2Int vector) => UnityEngine.Random.Range(vector.x, vector.y);
     #endregion
 
     #region GameObject Extensions

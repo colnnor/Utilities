@@ -48,6 +48,41 @@ public class MainToolbarButtons
             Debug.Log($"Editor not found, opened Package Manager instead.");
         }
     }
+    
+    [MainToolbarElement("Project/Select Render Pipeline Asset", defaultDockPosition = MainToolbarDockPosition.Middle)]
+    public static MainToolbarElement SelectRendererAssetButton()
+    {
+        var icon = EditorGUIUtility.IconContent("PreMatCube").image as Texture2D;
+        var content = new MainToolbarContent(icon);
+        var button = new MainToolbarButton(content, () =>
+        {
+            var renderPipelineAsset = UnityEngine.Rendering.GraphicsSettings.defaultRenderPipeline;
+            if (renderPipelineAsset != null)
+            {
+                Selection.activeObject = renderPipelineAsset;
+            }
+            else
+            {
+                Debug.LogWarning("No Render Pipeline Asset is assigned in Graphics Settings.");
+            }
+        });
+
+        var path = "Project/Select Render Pipeline Asset";
+        MainToolbarElementStyler.ZeroPadding(path);
+        MainToolbarElementStyler.StyleElement<EditorToolbarButton>(path, element =>
+        {
+            element.style.minWidth = 20f;
+            element.style.maxWidth = 20f;
+
+            var image = element.Q<Image>();
+            if (image != null)
+            {
+                image.style.width = 12f;
+                image.style.height = 12f;
+            }
+        });
+        return button;
+    }
 
     [MainToolbarElement("Project/Open My Assets", defaultDockPosition = MainToolbarDockPosition.Middle)]
     public static MainToolbarElement MyAssetsButton()
