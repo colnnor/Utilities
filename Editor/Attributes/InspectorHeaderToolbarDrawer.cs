@@ -1,19 +1,19 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
 [InitializeOnLoad]
 public static class InspectorHeaderToolbarDrawer
 {
-    private static Action<Editor> onDrawToolbar;
-    private static TypeCache.MethodCollection cachedMethods;
+    private static readonly Action<Editor> onDrawToolbar;
 
     static InspectorHeaderToolbarDrawer()
     {
-        cachedMethods = TypeCache.GetMethodsWithAttribute<HeaderToolbarButtonAttribute>();
-        foreach (var method in cachedMethods.Where(m => m.IsStatic))
+        var cachedMethods = TypeCache.GetMethodsWithAttribute<HeaderToolbarButtonAttribute>();
+        foreach (var method in cachedMethods.Where(m => m.IsStatic).OrderBy(m => m.GetCustomAttribute<HeaderToolbarButtonAttribute>().Priority))
         {
             var action = (Action<Editor>)Delegate.CreateDelegate(typeof(Action<Editor>), method);
             onDrawToolbar += action;
@@ -49,4 +49,9 @@ public static class InspectorHeaderToolbarDrawer
 [AttributeUsage(AttributeTargets.Method)]
 public class HeaderToolbarButtonAttribute : Attribute
 {
+    public int Priority { get; set; } = 0;
+    public HeaderToolbarButtonAttribute(int priority = 0)
+    {
+        Priority = priority;
+    }
 }
