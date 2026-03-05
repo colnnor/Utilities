@@ -10,7 +10,6 @@ public class RotateByLocation : MonoBehaviour
     [Tooltip("Distance to move for a full rotation")]
     [SerializeField] private float fullRotationDistance = 1;
     [Tooltip("Degrees to rotate per one unit moved")]
-    [FloatIncrement]
     [SerializeField] private float rotationAmount;
     private float delta;
     private Vector3 offset;

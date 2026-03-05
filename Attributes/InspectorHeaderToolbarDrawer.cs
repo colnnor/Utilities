@@ -1,3 +1,5 @@
+#if UNITY_EDITOR
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,6 +48,7 @@ public static class InspectorHeaderToolbarDrawer
 
 
 }
+#endif
 
 [AttributeUsage(AttributeTargets.Method)]
 public class HeaderToolbarButtonAttribute : Attribute
@@ -55,4 +58,4 @@ public class HeaderToolbarButtonAttribute : Attribute
     {
         Priority = priority;
     }
-}
+}   

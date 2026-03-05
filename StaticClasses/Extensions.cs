@@ -578,9 +578,7 @@ public static class Extensions
         {
             n--;
             int k = rng.Next(n + 1);
-            T value = list[k];
-            list[k] = list[n];
-            list[n] = value;
+            (list[k], list[n]) = (list[n], list[k]);
         }
 
         return list;
@@ -593,7 +591,8 @@ public static class Extensions
     {
         foreach (var item in list.Where(item => item).Select(i => i.gameObject))
         {
-            Object.Destroy(item);
+            
+            item.Destroy();
         }
 
         list.Clear();

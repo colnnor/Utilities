@@ -104,7 +104,7 @@ public static class Helpers
         LayerMask mask = layerMask ?? Physics.DefaultRaycastLayers;
         
         Ray ray = Camera.ScreenPointToRay(Mouse.current.position.ReadValue());
-        if (Physics.Raycast(ray, out RaycastHit hit, 1000f, mask))
+        if (Physics.Raycast(ray, out RaycastHit hit, 10000f, mask))
         {
             return hit.point;
         }
