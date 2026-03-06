@@ -1,13 +1,12 @@
 {
-    "name": "EditorUtilities",
+    "name": "Utilities.Editor",
     "rootNamespace": "",
     "references": [
-        "GUID:4307f53044263cf4b835bd812fc161a4",
-        "GUID:75469ad4d38634e559750d17036d5f7c",
-        "GUID:f36315ea338cb3345912a26cd369ec83",
-        "GUID:de13f8b1675b449e6a6af1cc0f7842ec"
+        "GUID:f36315ea338cb3345912a26cd369ec83"
     ],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,
