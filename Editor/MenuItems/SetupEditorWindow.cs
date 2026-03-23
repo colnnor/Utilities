@@ -69,8 +69,13 @@ public class SetupEditorWindow : EditorWindow
         {
             //add a toggle for each method and one button to import selected
             var label = method.Name.Replace("Import", "");
+            var disabled = AssetDatabase.FindAssets(label).Length <= 0;
             selectedAssets.TryAdd(method, false);
+            //display label if disabled, but greyed out and not interactable and if not display toggle as below
+            
+            EditorGUI.BeginDisabledGroup(!disabled);
             selectedAssets[method] = EditorGUILayout.ToggleLeft(label, selectedAssets[method]);
+            EditorGUI.EndDisabledGroup();
         }
     }
 

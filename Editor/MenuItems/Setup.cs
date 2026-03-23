@@ -28,6 +28,11 @@ public static class Setup
     {
         Assets.ImportAsset("vInspector 2", "kubacho lab/Editor ExtensionsUtilities");
     }
+    [MenuItem("Tools/Setup/Assets/Import Wingman")]
+    public static void ImportWingman()
+    {
+        Assets.ImportAsset("Wingman - Your Inspectors Best Friend", "Kyle Rhoads\\Editor ExtensionsUtilities");
+    }
 
     [MenuItem("Tools/Setup/Assets/Import Hot Reload")]
     public static void ImportHotReload()
