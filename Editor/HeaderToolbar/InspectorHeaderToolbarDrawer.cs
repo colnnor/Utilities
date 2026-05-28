@@ -20,7 +20,6 @@ public static class InspectorHeaderToolbarDrawer
 
         if (cachedMethods.Count > 0)
         {
-            Debug.Log($"[InspectorHeaderToolbarDrawer] Registered {cachedMethods.Count} toolbar button methods.");
             Editor.finishedDefaultHeaderGUI += DrawToolbar;
         }
     }
