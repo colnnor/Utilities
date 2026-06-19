@@ -56,6 +56,19 @@ public static class Extensions
 
     #endregion
 
+    #region Camera Extensions
+
+    public static Vector3[] GetCameraFrustumCorners(this Camera cam, float distance = 10)
+    {
+        var corners = new Vector3[4];
+        corners[0] = cam.ViewportToWorldPoint(new Vector3(0, 0, distance));
+        corners[1] = cam.ViewportToWorldPoint(new Vector3(1, 0, distance));
+        corners[2] = cam.ViewportToWorldPoint(new Vector3(1, 1, distance));
+        corners[3] = cam.ViewportToWorldPoint(new Vector3(0, 1, distance));
+        return corners;
+    }
+
+    #endregion
     
     #region Generic Extensions
 
