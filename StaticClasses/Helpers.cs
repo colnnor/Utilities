@@ -49,6 +49,7 @@ public static class Helpers
         return result;
     }
 
+    
 
     /// <summary>
     /// Creates a world text object at the given location
