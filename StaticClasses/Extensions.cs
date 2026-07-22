@@ -86,7 +86,7 @@ public static class Extensions
     }
 
     #endregion
-    
+
     #region Vector3 Extensions
 
     /// <summary>
@@ -184,6 +184,7 @@ public static class Extensions
     public static Vector2 With(this Vector2 vector, float? x = null, float? y = null) => new(x ?? vector.x, y ?? vector.y);
 
     public static int GetRandomValue(this Vector2Int vector) => UnityEngine.Random.Range(vector.x, vector.y);
+
     #endregion
 
     #region GameObject Extensions
@@ -238,12 +239,14 @@ public static class Extensions
             component = gameObject.GetComponentInChildren<T>();
         return component;
     }
+
     public static T GetComponentInHierarchy<T>(this GameObject gameObject) where T : Component
     {
         var root = gameObject.transform.root;
         T component = root.GetComponentOrInChildren<T>();
         return component;
     }
+
     public static bool TryAddComponent<T>(this GameObject gameObject) where T : Component
     {
         if (!gameObject.GetComponent<T>()) return false;
@@ -251,7 +254,7 @@ public static class Extensions
         gameObject.AddComponent<T>();
         return true;
     }
-    
+
     public static bool TryGetComponentOrInChildren<T>(this GameObject gameObject, out T component) where T : Component
     {
         if (!gameObject.TryGetComponent(out component))
@@ -314,7 +317,7 @@ public static class Extensions
     }
 
     #endregion
-    
+
     #region Transform Extensions
 
     /// <summary>
@@ -325,7 +328,29 @@ public static class Extensions
         foreach (Transform child in parent)
             yield return child;
     }
+    
+    public static bool TryGetSiblingByName(this Transform self, string name, out Transform sibling)
+    {
+        foreach (Transform child in self.parent)
+        {
+            if (child.name != name) continue;
+            
+            sibling = child;
+            return true;
+        }
 
+        sibling = null;
+        return false;
+    }
+    public static Transform GetSiblingByName(this Transform self, string name)
+    {
+        foreach (Transform child in self.parent)
+        {
+            if (child.name == name)
+                return child;
+        }
+        return null;
+    }
     public static bool TryGetChild(this Transform transform, int index, out Transform child)
     {
         if (index >= 0 && index < transform.childCount)
@@ -445,7 +470,7 @@ public static class Extensions
     public static float Abs(this float value)
     {
         return Mathf.Abs(value);
-    }/*
+    } /*
     public static float Remap(this float value, float fromMin, float fromMax, float toMin, float toMax)
     {
         if (toMax > toMin)
@@ -498,6 +523,8 @@ public static class Extensions
 
     #region int Extensions
 
+    
+
     public static int Clamp(this int value, int min, int max)
     {
         return Mathf.Clamp(value, min, max);
@@ -548,12 +575,14 @@ public static class Extensions
     }
 
     #endregion
+
     #region List Extensions
-    
+
     public static bool IsEmpty<T>(this List<T> list)
     {
         return list == null || list.Count == 0;
     }
+
     public static bool TryGet<T>(this List<T> list, T input, out T result)
     {
         if (list.Contains(input))
@@ -604,7 +633,6 @@ public static class Extensions
     {
         foreach (var item in list.Where(item => item).Select(i => i.gameObject))
         {
-            
             item.Destroy();
         }
 
