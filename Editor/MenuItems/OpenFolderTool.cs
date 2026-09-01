@@ -5,7 +5,7 @@ using UnityEngine;
 public static class OpenFolderTool 
 {
     [OnOpenAsset]
-    public static bool OnOpenAsset(int instanceID)
+    public static bool OnOpenAsset(EntityId instanceID)
     {
         Event e = Event.current;
         if (e is { shift: false }) return false;

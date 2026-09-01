@@ -23,11 +23,13 @@ public static class Setup
         ImportVInspector();
         // and so on...
     }
+
     [MenuItem("Tools/Setup/Assets/Import VInspector")]
     public static void ImportVInspector()
     {
         Assets.ImportAsset("vInspector 2", "kubacho lab/Editor ExtensionsUtilities");
     }
+
     [MenuItem("Tools/Setup/Assets/Import Wingman")]
     public static void ImportWingman()
     {
@@ -77,17 +79,81 @@ public static class Setup
         });
     }
 
+    [MenuItem("Tools/Setup/Packages/Install Keijiro Registry")]
+    public static void AddKeijiroRegistry()
+    {
+            var registryYaml =
+    @"- m_Id: scoped:project:Keijiro
+      m_Name: Keijiro
+      m_Url: https://registry.npmjs.com
+      m_Scopes:
+      - jp.keijiro
+      m_IsDefault: 0
+      m_IsUnityRegistry: 0
+      m_Capabilities: 0
+      m_ConfigSource: 4
+      m_Compliance:
+        m_Status: 0
+        m_Violations: []";
+
+            // ProjectSettings/PackageManagerSettings.asset path
+            var projectRoot = GetDirectoryName(Application.dataPath);
+            var pmPath = Combine(projectRoot, "ProjectSettings", "PackageManagerSettings.asset");
+
+            if (!File.Exists(pmPath))
+            {
+                Debug.LogError($"PackageManagerSettings.asset not found at {pmPath}");
+                return;
+            }
+
+            var content = File.ReadAllText(pmPath);
+            const string emptyPattern = "m_ScopedRegistries: []";
+
+            if (content.Contains(emptyPattern))
+            {
+                // Replace the empty list with a list containing our registry
+                var replacement = "m_ScopedRegistries:\n  " + registryYaml.Replace("\n", "\n  ").TrimEnd();
+                content = content.Replace(emptyPattern, replacement);
+                File.WriteAllText(pmPath, content);
+                Refresh();
+                Debug.Log("Added Keijiro scoped registry to PackageManagerSettings.asset");
+                return;
+            }
+
+            // If the key exists but is not empty, append the registry to the existing list
+            if (content.Contains("m_ScopedRegistries:"))
+            {
+                var insertAfter = "m_ScopedRegistries:";
+                var idx = content.IndexOf(insertAfter, System.StringComparison.Ordinal);
+                if (idx >= 0)
+                {
+                    // Find the end of the line for the key and insert our entry after it
+                    var lineEnd = content.IndexOf('\n', idx);
+                    if (lineEnd == -1) lineEnd = content.Length - 1;
+                    var toInsert = "\n  " + registryYaml.Replace("\n", "\n  ").TrimEnd();
+                    content = content.Insert(lineEnd + 1, toInsert);
+                    File.WriteAllText(pmPath, content);
+                    Refresh();
+                    Debug.Log("Appended Keijiro scoped registry to PackageManagerSettings.asset");
+                    return;
+                }
+            }
+
+            Debug.LogWarning("Could not find m_ScopedRegistries key in PackageManagerSettings.asset");
+        }
+
     [MenuItem("Tools/Setup/Packages/Install Input System")]
     public static void InstallInputSystem()
     {
         Packages.InstallPackages("com.unity.inputsystem");
     }
-    
+
     [MenuItem("Tools/Setup/Packages/Install Netcode For Game Objects")]
     public static void InstallNetcodeGameObjects()
     {
         Packages.InstallPackages("com.unity.netcode.gameobjects");
     }
+
     [MenuItem("Tools/Setup/Packages/Install 2D Animation")]
     public static void Install2DAnimation()
     {
@@ -102,6 +168,7 @@ public static class Setup
     {
         Packages.InstallPackages("git+https://github.com/adammyhre/Unity-Improved-Timers.git");
     }
+
     [MenuItem("Tools/Setup/Packages/Install Cinemachine")]
     public static void InstallCinemachine()
     {
@@ -193,15 +260,18 @@ public static class Setup
         {
             selectedFolderPath = selectedFolderPath["Assets/".Length..];
         }
+
         if (string.IsNullOrEmpty(selectedFolderPath))
         {
             Debug.LogError("No folder selected.");
             return;
         }
+
         //Debug.Log($"Creating folders in {selectedFolderPath}");
-        Folders.Create(selectedFolderPath, "Art", "Audio", "Input", "Misc", "VFX", "RenderTextures","Media", "Materials", "Models", "Prefabs", "Scenes", "Scripts");
+        Folders.Create(selectedFolderPath, "Art", "Audio", "Input", "Misc", "VFX", "RenderTextures", "Media", "Materials", "Models", "Prefabs", "Scenes", "Scripts");
         Refresh();
     }
+
     static class Folders
     {
         public static void Create(string root, params string[] folders)
