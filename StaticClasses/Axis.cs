@@ -17,8 +17,7 @@ public static class Axis
             AxisType.None => Vector3.zero,
             AxisType.X => Vector3.right,
             AxisType.Y => Vector3.up,
-            AxisType.Z => Vector3.forward,
-            _ => throw new System.ArgumentOutOfRangeException(nameof(type), type, null)
+            AxisType.Z => Vector3.forward
         };
     }
     

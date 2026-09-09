@@ -23,7 +23,7 @@ public static class MissingScriptsHunter
             return;
         }
 
-        var sceneGameObjects = Object.FindObjectsByType<GameObject>(FindObjectsSortMode.None).ToList();
+        var sceneGameObjects = Object.FindObjectsByType<GameObject>().ToList();
         CheckGameObjects(sceneGameObjects);
     }
 

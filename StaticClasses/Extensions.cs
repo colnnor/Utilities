@@ -69,7 +69,7 @@ public static class Extensions
     }
 
     #endregion
-    
+
     #region Generic Extensions
 
     /// <summary>
@@ -304,6 +304,7 @@ public static class Extensions
 
     #region EditorExtensions
 
+#if UNITY_EDITOR
     public static MonoBehaviour GetOwningMonoBehaviour(this SerializedProperty property)
     {
         if (property == null) return null;
@@ -315,6 +316,8 @@ public static class Extensions
         // Get the target object (the MonoBehaviour)
         return serializedObject.targetObject as MonoBehaviour;
     }
+
+#endif
 
     #endregion
 
@@ -328,13 +331,13 @@ public static class Extensions
         foreach (Transform child in parent)
             yield return child;
     }
-    
+
     public static bool TryGetSiblingByName(this Transform self, string name, out Transform sibling)
     {
         foreach (Transform child in self.parent)
         {
             if (child.name != name) continue;
-            
+
             sibling = child;
             return true;
         }
@@ -342,6 +345,7 @@ public static class Extensions
         sibling = null;
         return false;
     }
+
     public static Transform GetSiblingByName(this Transform self, string name)
     {
         foreach (Transform child in self.parent)
@@ -349,8 +353,10 @@ public static class Extensions
             if (child.name == name)
                 return child;
         }
+
         return null;
     }
+
     public static bool TryGetChild(this Transform transform, int index, out Transform child)
     {
         if (index >= 0 && index < transform.childCount)
@@ -522,8 +528,6 @@ public static class Extensions
     #endregion
 
     #region int Extensions
-
-    
 
     public static int Clamp(this int value, int min, int max)
     {

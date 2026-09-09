@@ -124,7 +124,9 @@ public class ObjectArray : MonoBehaviour
                 children[i].Destroy();
                 children.RemoveAt(i);
             }
-            Debug.Log($"Removed {children.Count - targetCount} extra children.", this);
+
+            string count = (children.Count - targetCount).ToString();
+            Debug.Log($"Removed {count} extra children.", this);
         }
         else if (children.Count < targetCount)
         {

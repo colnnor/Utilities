@@ -42,7 +42,7 @@ public static class ContextProperties
             property.serializedObject.ApplyModifiedProperties();
         });
     }
-
+    
     static void PingObject(string path)
     {
         Object obj = AssetDatabase.LoadAssetAtPath<Object>(path);

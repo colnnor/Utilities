@@ -7,6 +7,6 @@ using UnityEngine;
 public class SceneList : ScriptableObject
 {
     public List<string> favoriteScenes = new List<string>();
-    public Dictionary<string, DateTime> lastOpenedScenes = new Dictionary<string, DateTime>();
+    [SerializeField] public Dictionary<string, DateTime> lastOpenedScenes = new Dictionary<string, DateTime>();
     public List<string> allScenes = new List<string>();
 }
