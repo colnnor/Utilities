@@ -529,6 +529,8 @@ public static class Extensions
 
     #region int Extensions
 
+    
+
     public static int Clamp(this int value, int min, int max)
     {
         return Mathf.Clamp(value, min, max);
