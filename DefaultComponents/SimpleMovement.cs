@@ -7,7 +7,7 @@ public class SimpleMovement : MonoBehaviour
 {
     public AxisType horizontalAxis = AxisType.X;
     public AxisType verticalAxis = AxisType.Y;
-    
+    public float shiftMultiplier = 2f;
     public float speed = 1f;
     public float speedRamp = 10f;
 
@@ -23,10 +23,11 @@ public class SimpleMovement : MonoBehaviour
     {
         float horizontal = Inputs.GetAxis("Horizontal");
         float vertical = Inputs.GetAxis("Vertical");
-        
+        var multiplied = Inputs.GetKey(Key.LeftShift) || Inputs.GetKey(Key.RightShift);
+        var multiplier = multiplied ? shiftMultiplier : 1f;
         Vector3 targetDelta = Axis.GetAxis(horizontalAxis) * horizontal + Axis.GetAxis(verticalAxis) * vertical;
         movementDelta = Vector3.Lerp(movementDelta, targetDelta, Time.deltaTime * speedRamp);
-        currentSpeed = Mathf.Lerp(currentSpeed, speed, Time.deltaTime * speedRamp);
+        currentSpeed = Mathf.Lerp(currentSpeed, speed * multiplier, Time.deltaTime * speedRamp);
         transform.position += movementDelta * (currentSpeed * Time.deltaTime);
     
         //rotate towards movement direction

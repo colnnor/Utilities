@@ -17,7 +17,7 @@ public static class Helpers
         get
         {
             if (!camera) camera = Camera.main;
-            if (!camera) camera = Object.FindFirstObjectByType<Camera>();
+            if (!camera) camera = Object.FindAnyObjectByType<Camera>();
             return camera;
         }
     }

@@ -93,6 +93,7 @@ public class SceneFavoritesOverlay : Overlay
         container.Add(buttonContainer);
 
         UpdateSceneList("");
+        searchField.SendEvent(new MouseDownEvent { target = searchField});
         return container;
     }
 

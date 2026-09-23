@@ -13,7 +13,6 @@ public class ObjectArray : MonoBehaviour
     [Header("Array Settings")]
     [SerializeField] private ArrayType arrayType = ArrayType.Grid;
     [SerializeField] private Plane plane = Plane.XZ;
-    [SerializeField] private float spacing = 2f;
 
     [Header("Grid Settings")]
     [SerializeField, Min(1)] private int gridSizeX = 5;

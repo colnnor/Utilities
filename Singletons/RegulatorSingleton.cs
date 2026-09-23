@@ -38,7 +38,7 @@ namespace UnityUtils {
             InitializationTime = Time.time;
             DontDestroyOnLoad(gameObject);
 
-            T[] oldInstances = FindObjectsByType<T>(FindObjectsSortMode.None);
+            T[] oldInstances = FindObjectsByType<T>();
             foreach (T old in oldInstances) {
                 if (old.GetComponent<RegulatorSingleton<T>>().InitializationTime < InitializationTime) {
                     Destroy(old.gameObject);

@@ -92,7 +92,7 @@ public class DrawPlaneAtDistance : MonoBehaviour
             meshCollider.sharedMesh = planeMesh;
         }
     }
-
+    
     private List<Vector3> GetLocalCorners()
     {
         Vector3[] corners = new Vector3[4];
@@ -133,6 +133,11 @@ public class DrawPlaneAtDistance : MonoBehaviour
             Vector3 to = transform.TransformPoint(corners[(i + 1) % 4]);
             Gizmos.DrawLine(from, to);
         }
+    }
+
+    private void OnDestroy()
+    {
+        if (planeRenderer) Destroy(planeRenderer.gameObject);
     }
 
     enum DrawPlaneMode
