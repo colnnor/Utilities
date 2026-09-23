@@ -26,6 +26,7 @@ public class ObjectArray : MonoBehaviour
     [SerializeField, Min(0.1f)] private float radius = 5f;
 
     [Header("Rotation Settings")]
+    [SerializeField] private bool affectRotation = true;
     [SerializeField] private bool faceCenter;
     [SerializeField] private Vector3 individualRotationOffset;
     [SerializeField] private Vector3 constantRotationOffset;
@@ -81,13 +82,14 @@ public class ObjectArray : MonoBehaviour
         {
             float angle = i * angleStep * Mathf.Deg2Rad;
             Vector3 pos = plane == Plane.XY ? new Vector3(Mathf.Cos(angle) * radius, Mathf.Sin(angle) * radius, 0) : new Vector3(Mathf.Cos(angle) * radius, 0, Mathf.Sin(angle) * radius);
-            children[i].localPosition = pos;
+            children[i].localPosition = transform.TransformPoint(pos);
             ApplyRotation(i);
         }
     }
 
     private void ApplyRotation(int i)
     {
+        if (!affectRotation) return;
         if (faceCenter)
         {
             Vector3 directionToCenter = (transform.position - children[i].position).normalized;

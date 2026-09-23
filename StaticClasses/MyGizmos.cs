@@ -12,6 +12,21 @@ public class MyGizmos
         Gizmos.DrawRay(endPoint, right * arrowHeadLength);
         Gizmos.DrawRay(endPoint, left * arrowHeadLength);
     }
+
+    public static void DrawWireSpheres(float radius = 0.1f, params Vector3[] positions)
+    {
+        foreach (var position in positions)
+        {
+            Gizmos.DrawWireSphere(position, radius);
+        }
+    }
+    public static void DrawSpheres(float radius = 0.1f, params Vector3[] positions)
+    {
+        foreach (var position in positions)
+        {
+            Gizmos.DrawSphere(position, radius);
+        }
+    }
     public static void DrawCircle(Vector3 position, float radius, Vector3 normal, int resolution = 36)
     {
         var axis = normal.normalized;
